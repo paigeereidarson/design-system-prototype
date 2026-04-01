@@ -2,8 +2,10 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/geist";
+@import "@fontsource-variable/inter";
 
-@custom-variant dark (&:is(.dark *));
+/* dark variant covers both .dark and .nvidia themes */
+@custom-variant dark (&:is(.dark *, .nvidia *));
 
 @theme inline {
     --font-heading: var(--font-sans);
@@ -48,73 +50,253 @@
     --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/* =============================================
+ * Light Mode (default)
+ * Source: Figma "mode" collection → light mode
+ * ============================================= */
 :root {
-    --background: oklch(1 0 0);
-    --foreground: oklch(0.145 0 0);
-    --card: oklch(1 0 0);
-    --card-foreground: oklch(0.145 0 0);
-    --popover: oklch(1 0 0);
-    --popover-foreground: oklch(0.145 0 0);
-    --primary: oklch(0.205 0 0);
-    --primary-foreground: oklch(0.985 0 0);
-    --secondary: oklch(0.97 0 0);
-    --secondary-foreground: oklch(0.205 0 0);
-    --muted: oklch(0.97 0 0);
-    --muted-foreground: oklch(0.556 0 0);
-    --accent: oklch(0.97 0 0);
-    --accent-foreground: oklch(0.205 0 0);
-    --destructive: oklch(0.577 0.245 27.325);
-    --border: oklch(0.922 0 0);
-    --input: oklch(0.922 0 0);
-    --ring: oklch(0.708 0 0);
-    --chart-1: oklch(0.87 0 0);
-    --chart-2: oklch(0.556 0 0);
-    --chart-3: oklch(0.439 0 0);
-    --chart-4: oklch(0.371 0 0);
-    --chart-5: oklch(0.269 0 0);
-    --radius: 0.625rem;
-    --sidebar: oklch(0.985 0 0);
-    --sidebar-foreground: oklch(0.145 0 0);
-    --sidebar-primary: oklch(0.205 0 0);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.97 0 0);
-    --sidebar-accent-foreground: oklch(0.205 0 0);
-    --sidebar-border: oklch(0.922 0 0);
-    --sidebar-ring: oklch(0.708 0 0);
+    /* Core */
+    --background: #FFFFFF;           /* Figma: white */
+    --foreground: #0A0A0A;           /* Figma: neutral/950 */
+
+    /* Card */
+    --card: #FFFFFF;                 /* Figma: white */
+    --card-foreground: #0A0A0A;      /* Figma: neutral/950 */
+
+    /* Popover */
+    --popover: #FFFFFF;              /* Figma: white */
+    --popover-foreground: #0A0A0A;   /* Figma: neutral/950 */
+
+    /* Primary */
+    --primary: #171717;              /* Figma: neutral/900 */
+    --primary-foreground: #FAFAFA;   /* Figma: neutral/50 */
+
+    /* Secondary */
+    --secondary: #F5F5F5;            /* Figma: neutral/100 */
+    --secondary-foreground: #0A0A0A; /* Figma: neutral/950 */
+
+    /* Muted */
+    --muted: #F5F5F5;                /* Figma: neutral/100 */
+    --muted-foreground: #737373;     /* Figma: neutral/500 */
+
+    /* Accent */
+    --accent: #F5F5F5;               /* Figma: neutral/100 */
+    --accent-foreground: #171717;    /* Figma: neutral/900 */
+
+    /* Semantic */
+    --destructive: #DC2626;          /* Figma: red/600 */
+    --warn: #DC2626;                 /* Figma: red/600 */
+    --success: #DC2626;              /* Figma: red/600 */
+
+    /* Borders & Input */
+    --border: #E5E5E5;               /* Figma: neutral/200 */
+    --input: #E5E5E5;                /* Figma: neutral/200 */
+    --ring: #737373;                 /* Figma: neutral/500 */
+
+    /* Charts */
+    --chart-1: #2870BD;              /* Figma: blue/8 */
+    --chart-2: #0090FF;              /* Figma: blue/9 */
+    --chart-3: #3B9EFF;              /* Figma: blue/10 */
+    --chart-4: #70B8FF;              /* Figma: blue/11 */
+    --chart-5: #C2E6FF;              /* Figma: blue/12 */
+
+    /* Radius — from Figma mode collection */
+    --radius: 10px;                  /* Figma: radius-lg = 10px */
+
+    /* Sidebar */
+    --sidebar: #FAFAFA;              /* Figma: neutral/50 */
+    --sidebar-foreground: #0A0A0A;   /* Figma: neutral/950 */
+    --sidebar-primary: #171717;      /* Figma: neutral/900 */
+    --sidebar-primary-foreground: #FAFAFA; /* Figma: neutral/50 */
+    --sidebar-accent: #F5F5F5;       /* Figma: neutral/100 */
+    --sidebar-accent-foreground: #171717; /* Figma: neutral/900 */
+    --sidebar-border: #E5E5E5;       /* Figma: neutral/200 */
+    --sidebar-ring: #737373;         /* Figma: neutral/500 */
 }
 
+/* =============================================
+ * Dark Mode
+ * Source: Figma "mode" collection → dark mode
+ * ============================================= */
 .dark {
-    --background: oklch(0.145 0 0);
-    --foreground: oklch(0.985 0 0);
-    --card: oklch(0.205 0 0);
-    --card-foreground: oklch(0.985 0 0);
-    --popover: oklch(0.205 0 0);
-    --popover-foreground: oklch(0.985 0 0);
-    --primary: oklch(0.922 0 0);
-    --primary-foreground: oklch(0.205 0 0);
-    --secondary: oklch(0.269 0 0);
-    --secondary-foreground: oklch(0.985 0 0);
-    --muted: oklch(0.269 0 0);
-    --muted-foreground: oklch(0.708 0 0);
-    --accent: oklch(0.269 0 0);
-    --accent-foreground: oklch(0.985 0 0);
-    --destructive: oklch(0.704 0.191 22.216);
-    --border: oklch(1 0 0 / 10%);
-    --input: oklch(1 0 0 / 15%);
-    --ring: oklch(0.556 0 0);
-    --chart-1: oklch(0.87 0 0);
-    --chart-2: oklch(0.556 0 0);
-    --chart-3: oklch(0.439 0 0);
-    --chart-4: oklch(0.371 0 0);
-    --chart-5: oklch(0.269 0 0);
-    --sidebar: oklch(0.205 0 0);
-    --sidebar-foreground: oklch(0.985 0 0);
-    --sidebar-primary: oklch(0.488 0.243 264.376);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.269 0 0);
-    --sidebar-accent-foreground: oklch(0.985 0 0);
-    --sidebar-border: oklch(1 0 0 / 10%);
-    --sidebar-ring: oklch(0.556 0 0);
+    /* Core */
+    --background: #101211;           /* Figma: sage/1 */
+    --foreground: #ECEEED;           /* Figma: sage/12 */
+
+    /* Card */
+    --card: #202221;                 /* Figma: sage/3 */
+    --card-foreground: #ECEEED;      /* Figma: sage/12 */
+
+    /* Popover */
+    --popover: #202221;              /* Figma: sage/3 */
+    --popover-foreground: #ECEEED;   /* Figma: sage/12 */
+
+    /* Primary */
+    --primary: #171918;              /* Figma: sage/2 */
+    --primary-foreground: #ECEEED;   /* Figma: sage/12 */
+
+    /* Secondary */
+    --secondary: #202221;            /* Figma: sage/3 */
+    --secondary-foreground: #ECEEED; /* Figma: sage/12 */
+
+    /* Muted */
+    --muted: #202221;                /* Figma: sage/3 */
+    --muted-foreground: #ADB5B2;     /* Figma: sage/11 */
+
+    /* Accent */
+    --accent: #202221;               /* Figma: sage/3 */
+    --accent-foreground: #63706B;    /* Figma: sage/9 */
+
+    /* Semantic */
+    --destructive: #E5484D;          /* Figma: red/9 */
+    --warn: #FFC53D;                 /* Figma: amber/9 */
+    --success: #33B074;              /* Figma: green/10 */
+
+    /* Borders & Input */
+    --border: #444947;               /* Figma: sage/7 */
+    --input: #171918;                /* Figma: sage/2 */
+    --ring: #373B39;                 /* Figma: sage/6 */
+
+    /* Charts */
+    --chart-1: #2870BD;              /* Figma: blue/8 */
+    --chart-2: #0090FF;              /* Figma: blue/9 */
+    --chart-3: #3B9EFF;              /* Figma: blue/10 */
+    --chart-4: #70B8FF;              /* Figma: blue/11 */
+    --chart-5: #C2E6FF;              /* Figma: blue/12 */
+
+    /* Sidebar */
+    --sidebar: #171918;              /* Figma: sage/2 */
+    --sidebar-foreground: #FAFAFA;   /* Figma: neutral/50 */
+    --sidebar-primary: #3B9EFF;      /* Figma: blue/10 */
+    --sidebar-primary-foreground: #ECEEED; /* Figma: sage/12 */
+    --sidebar-accent: #262626;       /* Figma: neutral/800 */
+    --sidebar-accent-foreground: #FAFAFA; /* Figma: neutral/50 */
+    --sidebar-border: #272A29;       /* Figma: sage/4 */
+    --sidebar-ring: #737373;         /* Figma: neutral/500 */
+}
+
+/* =============================================
+ * NVIDIA Brand Theme
+ * Source: NVIDIA brand guidelines (public)
+ * Primary green: #76B900
+ * Font: 'Inter Variable' (stand-in for NVIDIA Sans,
+ *        their proprietary typeface — swap in production)
+ *
+ * Structure mirrors Figma variable alias chain:
+ *   Layer 1 — Primitives  (rdx/colors → nvidia-green, gray, states)
+ *   Layer 2 — Semantic    (mode → NVIDIA column, all var() references)
+ *
+ * To rebrand: update Layer 1 primitives only.
+ * ============================================= */
+.nvidia {
+
+    /* =============================================
+     * Layer 1 — Primitives
+     * ============================================= */
+
+    /* nvidia-green/1–12
+     * Figma: rdx/colors → nvidia-green (dark mode)
+     * Step 9 = NVIDIA brand green                  */
+    --nvidia-green-1:  #0D1200;
+    --nvidia-green-2:  #121700;
+    --nvidia-green-3:  #182100;
+    --nvidia-green-4:  #1F2B00;
+    --nvidia-green-5:  #273500;
+    --nvidia-green-6:  #334400;
+    --nvidia-green-7:  #4A6200;
+    --nvidia-green-8:  #5E7D00;
+    --nvidia-green-9:  #76B900;  /* ← NVIDIA brand green */
+    --nvidia-green-10: #84CC00;
+    --nvidia-green-11: #A8E032;
+    --nvidia-green-12: #D4F57A;
+
+    /* gray/1–12
+     * Figma: rdx/colors → gray (dark mode, resolved)  */
+    --gray-1:  #111111;
+    --gray-2:  #191919;
+    --gray-3:  #222222;
+    --gray-4:  #2A2A2A;
+    --gray-5:  #313131;
+    --gray-6:  #3A3A3A;
+    --gray-7:  #484848;
+    --gray-8:  #606060;
+    --gray-9:  #6E6E6E;
+    --gray-10: #7B7B7B;
+    --gray-11: #B4B4B4;
+    --gray-12: #EEEEEE;
+
+    /* Semantic state primitives
+     * Figma: rdx/colors → red/9, amber/9, green/10   */
+    --rdx-red-9:    #E5484D;
+    --rdx-amber-9:  #FFC53D;
+    --rdx-green-10: #33B074;
+
+    /* =============================================
+     * Layer 2 — Semantic tokens
+     * Figma: mode → NVIDIA column (all aliases)
+     * ============================================= */
+
+    /* Core */
+    --background:           var(--gray-1);
+    --foreground:           var(--gray-12);
+
+    /* Card */
+    --card:                 var(--gray-2);
+    --card-foreground:      var(--gray-12);
+
+    /* Popover */
+    --popover:              var(--gray-2);
+    --popover-foreground:   var(--gray-12);
+
+    /* Primary — NVIDIA Green */
+    --primary:              var(--nvidia-green-9);
+    --primary-foreground:   var(--gray-1);
+
+    /* Secondary */
+    --secondary:            var(--gray-3);
+    --secondary-foreground: var(--gray-12);
+
+    /* Muted */
+    --muted:                var(--gray-2);
+    --muted-foreground:     var(--gray-10);
+
+    /* Accent */
+    --accent:               var(--nvidia-green-9);
+    --accent-foreground:    var(--gray-1);
+
+    /* Semantic states */
+    --destructive:          var(--rdx-red-9);
+    --warn:                 var(--rdx-amber-9);
+    --success:              var(--rdx-green-10);
+
+    /* Borders & input */
+    --border:               var(--gray-4);
+    --input:                var(--gray-2);
+    --ring:                 var(--nvidia-green-9);
+
+    /* Charts — nvidia-green ramp steps 9 → 12 */
+    --chart-1:              var(--nvidia-green-9);
+    --chart-2:              var(--nvidia-green-8);
+    --chart-3:              var(--nvidia-green-10);
+    --chart-4:              var(--nvidia-green-11);
+    --chart-5:              var(--nvidia-green-12);
+
+    /* Radius — sharp and technical */
+    --radius: 4px;
+
+    /* Sidebar */
+    --sidebar:                    var(--gray-2);
+    --sidebar-foreground:         var(--gray-12);
+    --sidebar-primary:            var(--nvidia-green-9);
+    --sidebar-primary-foreground: var(--gray-1);
+    --sidebar-accent:             var(--gray-2);
+    --sidebar-accent-foreground:  var(--gray-12);
+    --sidebar-border:             var(--gray-4);
+    --sidebar-ring:               var(--nvidia-green-9);
+
+    /* Typography — Inter Variable as NVIDIA Sans stand-in */
+    --font-sans:    'Inter Variable', 'NVIDIA Sans', system-ui, sans-serif;
+    --font-heading: 'Inter Variable', 'NVIDIA Sans', system-ui, sans-serif;
 }
 
 @layer base {

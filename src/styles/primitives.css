@@ -1,0 +1,32 @@
+/*
+ * Primitive Design Tokens
+ * Source: Figma file "shadcn/ui components with variables & Tailwind classes"
+ * Collection: tokens (raw scale values)
+ *
+ * These are the raw building blocks. They are NOT used directly in components.
+ * Instead, semantic tokens in index.css reference these values.
+ */
+
+:root {
+  /* ========================================
+   * Border Radius Scale
+   * Figma collection: mode → radius-*
+   * ======================================== */
+  --radius-none: 0px;
+  --radius-xs: 2px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 14px;
+  --radius-2xl: 18px;
+  --radius-3xl: 22px;
+  --radius-4xl: 26px;
+  --radius-full: 9999px;
+
+  /* ========================================
+   * Border & Stroke
+   * Figma collection: mode → stroke-width, border-width
+   * ======================================== */
+  --border-width: 1px;
+  --stroke-width: 2px;
+}
