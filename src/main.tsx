@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
 
-document.documentElement.classList.add('nvidia')
+document.documentElement.classList.add('nvidia-light')
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

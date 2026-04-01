@@ -1,11 +1,11 @@
 import { useState } from "react"
 import {
-  ChatText,
-  Star,
-  TrendUp,
-  Users,
-  MagnifyingGlass,
-} from "@phosphor-icons/react"
+  RiMessage2Line,
+  RiStarLine,
+  RiArrowRightUpLine,
+  RiTeamLine,
+  RiSearchLine,
+} from "@remixicon/react"
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { SidebarNav } from "@/components/custom/sidebar-nav"
@@ -39,7 +39,7 @@ export function Dashboard() {
           <div className="flex flex-1 items-center justify-between gap-4">
             <h1 className="text-lg font-semibold">Customer Feedback</h1>
             <div className="relative w-full max-w-xs">
-              <MagnifyingGlass className="pointer-events-none absolute left-2 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+              <RiSearchLine className="pointer-events-none absolute left-2 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 placeholder="Search feedback..."
                 className="pl-8"
@@ -57,25 +57,25 @@ export function Dashboard() {
                 title="Total Feedback"
                 value={stats.totalFeedback}
                 description="All time responses"
-                icon={ChatText}
+                icon={RiMessage2Line}
               />
               <StatCard
                 title="Average Rating"
                 value={`${stats.averageRating}/5`}
                 description="Across all feedback"
-                icon={Star}
+                icon={RiStarLine}
               />
               <StatCard
                 title="Positive Rate"
                 value={`${stats.positiveRate}%`}
                 description="Positive sentiment"
-                icon={TrendUp}
+                icon={RiArrowRightUpLine}
               />
               <StatCard
                 title="Response Rate"
                 value={`${stats.responseRate}%`}
                 description="Replies sent"
-                icon={Users}
+                icon={RiTeamLine}
               />
             </div>
           </section>

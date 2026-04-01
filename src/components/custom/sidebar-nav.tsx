@@ -1,19 +1,19 @@
 import {
-  SquaresFour,
-  ChatText,
-  ChartBar,
-  GearSix,
-} from "@phosphor-icons/react"
+  RiDashboardLine,
+  RiMessage2Line,
+  RiBarChartLine,
+  RiSettings3Line,
+} from "@remixicon/react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import nvidiaMark from "@/assets/nvidia-mar.png"
 
 const navItems = [
-  { label: "Overview", icon: SquaresFour, active: false },
-  { label: "Feedback", icon: ChatText, active: true },
-  { label: "Analytics", icon: ChartBar, active: false },
-  { label: "Settings", icon: GearSix, active: false },
+  { label: "Overview",  icon: RiDashboardLine, active: false },
+  { label: "Feedback",  icon: RiMessage2Line,  active: true  },
+  { label: "Analytics", icon: RiBarChartLine,  active: false },
+  { label: "Settings",  icon: RiSettings3Line, active: false },
 ]
 
 interface SidebarNavProps {

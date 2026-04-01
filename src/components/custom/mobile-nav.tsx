@@ -1,4 +1,4 @@
-import { List } from "@phosphor-icons/react"
+import { RiMenuLine } from "@remixicon/react"
 import { Button } from "@/components/ui/button"
 import {
   Sheet,
@@ -14,7 +14,7 @@ export function MobileNav() {
       <SheetTrigger
         render={<Button variant="ghost" size="icon" className="md:hidden" />}
       >
-        <List className="size-5" />
+        <RiMenuLine className="size-5" />
         <span className="sr-only">Open navigation</span>
       </SheetTrigger>
       <SheetContent side="left" showCloseButton={true} className="w-64 p-0">

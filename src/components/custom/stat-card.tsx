@@ -1,11 +1,11 @@
-import type { Icon as PhosphorIcon } from "@phosphor-icons/react"
+import type { RemixiconComponentType } from "@remixicon/react"
 import { Card, CardContent } from "@/components/ui/card"
 
 interface StatCardProps {
   title: string
   value: string | number
   description: string
-  icon: PhosphorIcon
+  icon: RemixiconComponentType
 }
 
 export function StatCard({ title, value, description, icon: Icon }: StatCardProps) {

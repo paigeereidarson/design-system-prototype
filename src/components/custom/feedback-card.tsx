@@ -1,4 +1,4 @@
-import { Star } from "@phosphor-icons/react"
+import { RiStarFill, RiStarLine } from "@remixicon/react"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardAction } from "@/components/ui/card"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
@@ -19,13 +19,13 @@ const sentimentLabel: Record<Sentiment, string> = {
 function StarRating({ rating }: { rating: number }) {
   return (
     <div className="flex gap-0.5">
-      {Array.from({ length: 5 }, (_, i) => (
-        <Star
-          key={i}
-          weight={i < rating ? "fill" : "regular"}
-          className={`size-3.5 ${i < rating ? "text-foreground" : "text-muted-foreground"}`}
-        />
-      ))}
+      {Array.from({ length: 5 }, (_, i) =>
+        i < rating ? (
+          <RiStarFill key={i} className="size-3.5 text-foreground" />
+        ) : (
+          <RiStarLine key={i} className="size-3.5 text-muted-foreground" />
+        )
+      )}
     </div>
   )
 }
