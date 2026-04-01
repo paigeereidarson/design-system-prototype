@@ -7,7 +7,7 @@ import {
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { NvidiaLogo } from "@/components/custom/nvidia-logo"
+import nvidiaMark from "@/assets/nvidia-mar.png"
 
 const navItems = [
   { label: "Overview", icon: LayoutDashboard, active: false },
@@ -28,8 +28,9 @@ export function SidebarNav({ className }: SidebarNavProps) {
         className
       )}
     >
-      <div className="flex items-center border-b border-sidebar-border px-4 py-3">
-        <NvidiaLogo variant="full" className="h-7 w-auto text-sidebar-foreground" />
+      <div className="flex items-center gap-2 border-b border-sidebar-border px-4 py-3">
+        <img src={nvidiaMark} alt="NVIDIA" className="h-7 w-auto" />
+        <span className="text-xs font-semibold tracking-widest text-sidebar-foreground">PROTOTYPE</span>
       </div>
 
       <div className="flex flex-1 flex-col gap-1 p-2">
