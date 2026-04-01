@@ -1,4 +1,4 @@
-import { Menu } from "lucide-react"
+import { List } from "@phosphor-icons/react"
 import { Button } from "@/components/ui/button"
 import {
   Sheet,
@@ -14,7 +14,7 @@ export function MobileNav() {
       <SheetTrigger
         render={<Button variant="ghost" size="icon" className="md:hidden" />}
       >
-        <Menu className="size-5" />
+        <List className="size-5" />
         <span className="sr-only">Open navigation</span>
       </SheetTrigger>
       <SheetContent side="left" showCloseButton={true} className="w-64 p-0">

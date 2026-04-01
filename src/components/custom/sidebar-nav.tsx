@@ -1,19 +1,19 @@
 import {
-  LayoutDashboard,
-  MessageSquareText,
-  BarChart3,
-  Settings,
-} from "lucide-react"
+  SquaresFour,
+  ChatText,
+  ChartBar,
+  GearSix,
+} from "@phosphor-icons/react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import nvidiaMark from "@/assets/nvidia-mar.png"
 
 const navItems = [
-  { label: "Overview", icon: LayoutDashboard, active: false },
-  { label: "Feedback", icon: MessageSquareText, active: true },
-  { label: "Analytics", icon: BarChart3, active: false },
-  { label: "Settings", icon: Settings, active: false },
+  { label: "Overview", icon: SquaresFour, active: false },
+  { label: "Feedback", icon: ChatText, active: true },
+  { label: "Analytics", icon: ChartBar, active: false },
+  { label: "Settings", icon: GearSix, active: false },
 ]
 
 interface SidebarNavProps {

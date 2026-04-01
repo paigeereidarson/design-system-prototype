@@ -1,4 +1,4 @@
-import { Star } from "lucide-react"
+import { Star } from "@phosphor-icons/react"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardAction } from "@/components/ui/card"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
@@ -22,11 +22,8 @@ function StarRating({ rating }: { rating: number }) {
       {Array.from({ length: 5 }, (_, i) => (
         <Star
           key={i}
-          className={`size-3.5 ${
-            i < rating
-              ? "fill-foreground text-foreground"
-              : "fill-muted text-muted"
-          }`}
+          weight={i < rating ? "fill" : "regular"}
+          className={`size-3.5 ${i < rating ? "text-foreground" : "text-muted-foreground"}`}
         />
       ))}
     </div>
