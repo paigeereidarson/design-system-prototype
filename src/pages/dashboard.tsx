@@ -1,18 +1,12 @@
 import { useState } from "react"
-import {
-  RiMessage2Line,
-  RiStarLine,
-  RiArrowRightUpLine,
-  RiTeamLine,
-  RiSearchLine,
-} from "@remixicon/react"
+import { RiSearchLine } from "@remixicon/react"
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { SidebarNav } from "@/components/custom/sidebar-nav"
 import { MobileNav } from "@/components/custom/mobile-nav"
-import { StatCard } from "@/components/custom/stat-card"
+import { MetricCard } from "@/components/custom/metric-card"
 import { FeedbackCard } from "@/components/custom/feedback-card"
-import { feedbackData, stats } from "@/data/mock-feedback"
+import { feedbackData, metricCards } from "@/data/mock-feedback"
 import type { Sentiment } from "@/data/mock-feedback"
 
 function filterFeedback(tab: string) {
@@ -50,33 +44,12 @@ export function Dashboard() {
 
         {/* Content area */}
         <div className="flex flex-col gap-6 p-4 md:p-6">
-          {/* Stats row */}
-          <section aria-label="Summary statistics">
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              <StatCard
-                title="Total Feedback"
-                value={stats.totalFeedback}
-                description="All time responses"
-                icon={RiMessage2Line}
-              />
-              <StatCard
-                title="Average Rating"
-                value={`${stats.averageRating}/5`}
-                description="Across all feedback"
-                icon={RiStarLine}
-              />
-              <StatCard
-                title="Positive Rate"
-                value={`${stats.positiveRate}%`}
-                description="Positive sentiment"
-                icon={RiArrowRightUpLine}
-              />
-              <StatCard
-                title="Response Rate"
-                value={`${stats.responseRate}%`}
-                description="Replies sent"
-                icon={RiTeamLine}
-              />
+          {/* Metric cards row */}
+          <section aria-label="Key metrics">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+              {metricCards.map((card) => (
+                <MetricCard key={card.company} data={card} />
+              ))}
             </div>
           </section>
 

@@ -10,6 +10,19 @@
 @theme inline {
     --font-heading: var(--font-sans);
     --font-sans: 'Geist Variable', sans-serif;
+
+    /* NVIDIA type scale — mirrors Figma "NVIDIA Styleguide v0" typography */
+    --text-decorative: 2.25rem;           /* 36px / bold / lh 40px */
+    --text-decorative--line-height: 2.5rem;
+    --text-title: 1.5rem;                 /* 24px / bold / lh 30px */
+    --text-title--line-height: 1.875rem;
+    --text-heading: 1.25rem;              /* 20px / bold / lh 25px */
+    --text-heading--line-height: 1.5625rem;
+    --text-heading-sm: 1.125rem;          /* 18px / bold / lh 24px */
+    --text-heading-sm--line-height: 1.5rem;
+    /* body / label  → text-sm (14px / medium / lh 20px)  */
+    /* label-sm      → text-xs (12px / medium / lh 14px)  */
+
     --color-sidebar-ring: var(--sidebar-ring);
     --color-sidebar-border: var(--sidebar-border);
     --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -27,6 +40,11 @@
     --color-input: var(--input);
     --color-border: var(--border);
     --color-destructive: var(--destructive);
+    --color-destructive-foreground: var(--destructive-foreground);
+    --color-success: var(--success);
+    --color-success-foreground: var(--success-foreground);
+    --color-warn: var(--warn);
+    --color-warn-foreground: var(--warn-foreground);
     --color-accent-foreground: var(--accent-foreground);
     --color-accent: var(--accent);
     --color-muted-foreground: var(--muted-foreground);
@@ -364,10 +382,22 @@
     --accent:               var(--nvidia-green-500);
     --accent-foreground:    var(--neutral-950);
 
-    /* Semantic states */
-    --destructive:          var(--red-200);
-    --warn:                 var(--yellow-200);
-    --success:              var(--nvidia-green-200);
+    /* Semantic states — extracted directly from Figma selection (MCP)
+     * Each token = solid background color; paired *-foreground = text color.
+     * Source: NVIDIA Styleguide v0 → Badge component, NVIDIA-light mode.
+     *
+     *  success     → nvidia-green/200 → #CBF58A  (solid light green BG)
+     *  success-fg  → nvidia-green/800 → #375500  (dark green text)
+     *  destructive → red/200          → #FECACA  (solid light pink BG)
+     *  destruct-fg → red/700          → #B91C1C  (dark red text)
+     *  warn        → yellow/200       → #FEF08A  (solid yellow BG)
+     *  warn-fg     → yellow/800       → #854D0E  (dark amber text)       */
+    --destructive:             var(--red-200);
+    --destructive-foreground:  var(--red-700);
+    --warn:                    var(--yellow-200);
+    --warn-foreground:         var(--yellow-800);
+    --success:                 var(--nvidia-green-200);
+    --success-foreground:      var(--nvidia-green-800);
 
     /* Borders & input */
     --border:               var(--neutral-200);
@@ -381,8 +411,8 @@
     --chart-4:              var(--nvidia-green-800);
     --chart-5:              var(--nvidia-green-800);
 
-    /* Radius — standard (matches Figma radius-lg = 10px) */
-    --radius: 10px;
+    /* Radius — sharp (matches Figma radius-xs = 2px) */
+    --radius: 2px;
 
     /* Sidebar */
     --sidebar:                    var(--neutral-50);
@@ -394,19 +424,30 @@
     --sidebar-border:             var(--neutral-200);
     --sidebar-ring:               var(--nvidia-green-500);
 
-    /* Typography — Inter Variable as NVIDIA Sans stand-in */
-    --font-sans:    'Inter Variable', 'NVIDIA Sans', system-ui, sans-serif;
-    --font-heading: 'Inter Variable', 'NVIDIA Sans', system-ui, sans-serif;
+    /* Typography — Figma uses "Inter" (Medium 500 / Bold 700)
+       Inter Variable is the variable-font build, covering all weights.
+       'Inter' is a static fallback for non-variable font stacks.          */
+    --font-sans:    'Inter Variable', 'Inter', system-ui, sans-serif;
+    --font-heading: 'Inter Variable', 'Inter', system-ui, sans-serif;
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
-    }
+  }
   body {
-    @apply bg-background text-foreground;
-    }
+    /* Figma body weight is 500 (medium) across all NVIDIA type styles */
+    @apply bg-background text-foreground font-medium;
+  }
   html {
-    @apply font-sans;
-    }
+    /* Use var() directly so the per-theme --font-sans override is respected
+       at runtime. @apply font-sans would statically resolve to Geist at
+       build time, bypassing the .nvidia-light CSS variable cascade.       */
+    font-family: var(--font-sans);
+  }
+}
+
+/* NVIDIA-light: tabs active underline uses primary (NVIDIA green) */
+.nvidia-light [data-slot="tabs-trigger"][data-active]::after {
+  background-color: var(--color-primary);
 }

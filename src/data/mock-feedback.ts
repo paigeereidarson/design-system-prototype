@@ -134,6 +134,72 @@ export const feedbackData: FeedbackEntry[] = [
   },
 ]
 
+export interface MetricCardData {
+  company: string
+  category: string
+  score: string
+  delta: string
+  deltaPositive: boolean
+  metricLabel: string
+  description: string
+  footer: Array<{ value: string; label: string }>
+}
+
+export const metricCards: MetricCardData[] = [
+  {
+    company: "Onboarding",
+    category: "Product",
+    score: "4.8",
+    delta: "+0.3",
+    deltaPositive: true,
+    metricLabel: "Satisfaction",
+    description: "Onboarding rated highest this quarter. Users complete setup 40% faster than the previous flow.",
+    footer: [
+      { value: "12", label: "Responses" },
+      { value: "5", label: "Categories" },
+    ],
+  },
+  {
+    company: "Performance",
+    category: "Technical",
+    score: "2.4",
+    delta: "−1.2",
+    deltaPositive: false,
+    metricLabel: "Score",
+    description: "Load time complaints increasing. Three reports of 10+ second delays on date range filter.",
+    footer: [
+      { value: "3", label: "Reports" },
+      { value: "2", label: "Tickets" },
+    ],
+  },
+  {
+    company: "Support",
+    category: "Service",
+    score: "4.9",
+    delta: "+0.1",
+    deltaPositive: true,
+    metricLabel: "Response",
+    description: "Support team maintaining near-perfect first-contact resolution rate this month.",
+    footer: [
+      { value: "98%", label: "CSAT" },
+      { value: "45min", label: "Avg. time" },
+    ],
+  },
+  {
+    company: "Features",
+    category: "Requests",
+    score: "3.7",
+    delta: "+0.5",
+    deltaPositive: true,
+    metricLabel: "Interest",
+    description: "CSV export and real-time collaboration leading the feature request list this cycle.",
+    footer: [
+      { value: "7", label: "Requests" },
+      { value: "2", label: "Shipped" },
+    ],
+  },
+]
+
 export const stats = {
   totalFeedback: feedbackData.length,
   averageRating: Number((feedbackData.reduce((sum, f) => sum + f.rating, 0) / feedbackData.length).toFixed(1)),

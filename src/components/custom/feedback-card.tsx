@@ -4,16 +4,21 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import type { FeedbackEntry, Sentiment } from "@/data/mock-feedback"
 
-const sentimentVariant: Record<Sentiment, "default" | "secondary" | "destructive"> = {
-  positive: "default",
-  neutral: "secondary",
-  negative: "destructive",
-}
-
 const sentimentLabel: Record<Sentiment, string> = {
   positive: "Positive",
   neutral: "Neutral",
   negative: "Negative",
+}
+
+// Solid bg + foreground text — extracted from Figma badge selection via MCP.
+// success:     #CBF58A bg / #375500 text  (nvidia-green/200 + /800)
+// secondary:   #F5F5F5 bg / #0A0A0A text  (neutral/100 + /950)
+// destructive: #FECACA bg / #B91C1C text  (red/200 + red/700)
+// Shape: radius-lg = 10px → pill at badge height; rounded-full achieves same.
+const sentimentClass: Record<Sentiment, string> = {
+  positive: "bg-success text-success-foreground border-transparent rounded-full",
+  neutral:  "rounded-full",
+  negative: "bg-destructive text-destructive-foreground border-transparent rounded-full",
 }
 
 function StarRating({ rating }: { rating: number }) {
@@ -48,7 +53,10 @@ export function FeedbackCard({ feedback }: FeedbackCardProps) {
           </div>
         </div>
         <CardAction>
-          <Badge variant={sentimentVariant[feedback.sentiment]}>
+          <Badge
+            variant="secondary"
+            className={sentimentClass[feedback.sentiment]}
+          >
             {sentimentLabel[feedback.sentiment]}
           </Badge>
         </CardAction>

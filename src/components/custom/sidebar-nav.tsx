@@ -7,11 +7,11 @@ import {
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import nvidiaMark from "@/assets/nvidia-mar.png"
+import nvidiaLogoHorz from "@/assets/nvidia-logo-horz.png"
 
 const navItems = [
-  { label: "Overview",  icon: RiDashboardLine, active: false },
-  { label: "Feedback",  icon: RiMessage2Line,  active: true  },
+  { label: "Overview",  icon: RiDashboardLine, active: true  },
+  { label: "Feedback",  icon: RiMessage2Line,  active: false },
   { label: "Analytics", icon: RiBarChartLine,  active: false },
   { label: "Settings",  icon: RiSettings3Line, active: false },
 ]
@@ -28,9 +28,8 @@ export function SidebarNav({ className }: SidebarNavProps) {
         className
       )}
     >
-      <div className="flex items-center gap-2 border-b border-sidebar-border px-4 py-3">
-        <img src={nvidiaMark} alt="NVIDIA" className="h-7 w-auto" />
-        <span className="text-xs font-semibold tracking-widest text-sidebar-foreground">PROTOTYPE</span>
+      <div className="flex items-center border-b border-sidebar-border px-4 py-3">
+        <img src={nvidiaLogoHorz} alt="NVIDIA" className="h-6 w-auto" />
       </div>
 
       <div className="flex flex-1 flex-col gap-1 p-2">
