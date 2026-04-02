@@ -29,7 +29,7 @@ export function SidebarNav({ className }: SidebarNavProps) {
       )}
     >
       <div className="flex items-center border-b border-sidebar-border px-4 py-3">
-        <img src={nvidiaLogoHorz} alt="NVIDIA" className="h-6 w-auto" />
+        <img src={nvidiaLogoHorz} alt="NVIDIA" className="h-16 w-auto" />
       </div>
 
       <div className="flex flex-1 flex-col gap-1 p-2">
