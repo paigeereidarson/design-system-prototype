@@ -54,38 +54,27 @@ ask one focused question — not a list.
 Each option must be structurally and conceptually different — not aesthetic
 variations of the same flow.
 
-For each option output:
+Output each option as a compact block — one line per field, no extra whitespace:
 
-**Written reasoning block:**
-- **Mental model** — What conceptual frame does this put the user in?
-- **Entry** — Where does the flow begin and what context does the user arrive with?
-- **Key decision points** — Where does the user make choices? How many?
-- **Progressive disclosure** — What's hidden until needed? What's always visible?
-- **Error/alt paths** — What happens when things go wrong or the user deviates?
-- **Exit** — What does the user know/have/feel at the end?
-- **Best for** — Type of user or scenario where this approach wins
-- **Tradeoff** — What this option sacrifices
-- **Screen count** — Approximate number of screens
+```
+Option [N]: [Name that captures the philosophy] (~N screens)
+Mental model: ...
+Entry: ...
+Happy path: Step 1 → Step 2 → Step 3 → Outcome
+Alt/error paths: ...
+Best for: ...
+Tradeoff: ...
+```
 
-**Mermaid flowchart** (immediately after the reasoning block):
-- `flowchart TD` for linear flows, `flowchart LR` for branching-heavy flows
-- Screens as `[ ]` rectangles, decision points as `{ }` diamonds
-- Happy path as solid arrows `-->`, error/alt paths as dashed `-.->` 
-- Label every arrow with the action that triggers the transition
-- Include terminal nodes for success and exit/cancel states
+Keep each option to 6–8 lines max. Dense is better than tall.
 
-**Reasoning standards — think through each of these:**
-- Cognitive load — how many decisions per screen? Is each necessary?
-- Progressive disclosure — does complexity reveal only when the user is ready?
-- Error prevention over error recovery
-- Recognition over recall
-- Momentum — where might users stall or bail?
-- Trust signals — especially for first-use or permission flows
-- State clarity — is it always obvious what's happening?
+Reason through these internally before writing each option — don't output them
+as a list, just let them shape the options: cognitive load, progressive
+disclosure, error prevention, recognition over recall, momentum, trust signals,
+state clarity.
 
 **Be opinionated.** If one option is clearly stronger for the stated context, say
-so. Don't hedge. "Option 2 is strongest here because X" is better than "all
-options have merit."
+so. "Option 2 is strongest here because X" is better than "all options have merit."
 
 ### Step 3: Wait for confirmation
 
@@ -94,9 +83,9 @@ or "go with option 2" is enough — don't over-ask.
 
 ### Step 4: Build in flow order
 
-Once confirmed, build screens in the order they appear in the Mermaid chart so
-navigation wiring makes sense as you go. Use the alt paths and error states from
-the reasoning block to inform empty states, error states, and loading states —
+Once confirmed, build screens in the order they appear in the chosen option's
+happy path so navigation wiring makes sense as you go. Use the alt paths and
+error states to inform empty states, error states, and loading states —
 never leave these as TODOs.
 
 ---
