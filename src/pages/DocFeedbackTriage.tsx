@@ -1,20 +1,23 @@
 import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 import {
   RiSearchLine,
   RiAlertFill,
   RiErrorWarningFill,
   RiInformationFill,
   RiFileTextLine,
-  RiArrowRightSLine,
-  RiCheckLine,
   RiRobot2Line,
+  RiArrowRightLine,
   RiLoader4Line,
+  RiCheckLine,
+  RiThumbDownLine,
+  RiAddLine,
 } from "@remixicon/react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
-import { Card, CardHeader, CardContent } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Separator } from "@/components/ui/separator"
 import {
@@ -24,23 +27,30 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select"
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 import { SidebarNav } from "@/components/custom/sidebar-nav"
 import { MobileNav } from "@/components/custom/mobile-nav"
 import {
-  docFeedbackData,
+  initialCards,
   aiAgents,
   generateIssueTitle,
-  generateIssueDescription,
 } from "@/data/mock-doc-feedback"
-import type {
-  DocFeedbackEntry,
-  Severity,
-  IssueStatus,
-} from "@/data/mock-doc-feedback"
+import type { DocFeedbackCard, BoardColumn } from "@/data/mock-doc-feedback"
+
+const columns: { id: BoardColumn; label: string; emptyText: string }[] = [
+  { id: "new", label: "New Feedback", emptyText: "No new feedback" },
+  { id: "issue_created", label: "Issue Created", emptyText: "No pending issues" },
+  { id: "agent_working", label: "Agent Working", emptyText: "No agents active" },
+  { id: "resolved", label: "Resolved", emptyText: "Nothing resolved yet" },
+]
 
 const severityConfig: Record<
-  Severity,
+  string,
   { label: string; icon: typeof RiAlertFill; className: string }
 > = {
   critical: {
@@ -60,72 +70,56 @@ const severityConfig: Record<
   },
 }
 
-const statusConfig: Record<IssueStatus, { label: string; className: string }> = {
-  open: {
-    label: "Issue Created",
-    className: "bg-warn text-warn-foreground border-transparent",
-  },
-  in_progress: {
-    label: "Agent Working",
-    className: "bg-chart-1 text-primary-foreground border-transparent",
-  },
-  resolved: {
-    label: "Resolved",
-    className: "bg-success text-success-foreground border-transparent",
-  },
-}
-
-function filterByTab(tab: string, data: DocFeedbackEntry[]) {
-  if (tab === "all") return data
-  if (tab === "unresolved") return data.filter((f) => f.issueStatus === null)
-  return data.filter((f) => f.severity === tab)
+const columnColors: Record<BoardColumn, string> = {
+  new: "bg-muted-foreground",
+  issue_created: "bg-warn",
+  agent_working: "bg-chart-1",
+  resolved: "bg-success",
 }
 
 export function DocFeedbackTriage() {
-  const [activeTab, setActiveTab] = useState("all")
-  const [expandedId, setExpandedId] = useState<string | null>(null)
+  const navigate = useNavigate()
+  const [cards, setCards] = useState<DocFeedbackCard[]>(initialCards)
   const [search, setSearch] = useState("")
-  const [items, setItems] = useState(docFeedbackData)
+  const [selectedCard, setSelectedCard] = useState<DocFeedbackCard | null>(null)
+  const [dialogOpen, setDialogOpen] = useState(false)
 
   // Issue creation form state
   const [issueTitle, setIssueTitle] = useState("")
-  const [issueDescription, setIssueDescription] = useState("")
   const [selectedAgent, setSelectedAgent] = useState("")
-  const [justAssigned, setJustAssigned] = useState<string | null>(null)
 
-  const filtered = filterByTab(activeTab, items).filter(
-    (f) =>
-      f.feedbackText.toLowerCase().includes(search.toLowerCase()) ||
-      f.docPage.toLowerCase().includes(search.toLowerCase()) ||
-      f.customerName.toLowerCase().includes(search.toLowerCase())
+  const filtered = cards.filter(
+    (c) =>
+      c.feedbackText.toLowerCase().includes(search.toLowerCase()) ||
+      c.docPage.toLowerCase().includes(search.toLowerCase()) ||
+      c.customerName.toLowerCase().includes(search.toLowerCase())
   )
 
-  const unresolvedCount = items.filter((f) => f.issueStatus === null).length
-
-  function handleExpand(feedback: DocFeedbackEntry) {
-    if (expandedId === feedback.id) {
-      setExpandedId(null)
-      return
-    }
-    setExpandedId(feedback.id)
-    setIssueTitle(generateIssueTitle(feedback))
-    setIssueDescription(generateIssueDescription(feedback))
-    setSelectedAgent("")
-    setJustAssigned(null)
+  function openCard(card: DocFeedbackCard) {
+    setSelectedCard(card)
+    setIssueTitle(card.issueTitle ?? generateIssueTitle(card))
+    setSelectedAgent(card.assignedAgent ?? "")
+    setDialogOpen(true)
   }
 
-  function handleAssign(feedbackId: string) {
-    if (!selectedAgent) return
-    setItems((prev) =>
-      prev.map((f) =>
-        f.id === feedbackId ? { ...f, issueStatus: "in_progress" as IssueStatus } : f
+  function moveCard(cardId: string, to: BoardColumn, agent?: string) {
+    setCards((prev) =>
+      prev.map((c) =>
+        c.id === cardId
+          ? {
+              ...c,
+              column: to,
+              issueTitle: issueTitle || generateIssueTitle(c),
+              assignedAgent: agent ?? c.assignedAgent,
+            }
+          : c
       )
     )
-    setJustAssigned(feedbackId)
-    setTimeout(() => {
-      setExpandedId(null)
-      setJustAssigned(null)
-    }, 1500)
+    setDialogOpen(false)
+  }
+
+  function getColumnCards(columnId: BoardColumn) {
+    return filtered.filter((c) => c.column === columnId)
   }
 
   return (
@@ -134,314 +128,307 @@ export function DocFeedbackTriage() {
         <SidebarNav className="h-full" />
       </aside>
 
-      <main className="flex flex-1 flex-col overflow-y-auto">
+      <main className="flex flex-1 flex-col overflow-hidden">
         {/* Header */}
         <header className="flex items-center gap-3 border-b border-border px-4 py-3 md:px-6">
           <MobileNav />
           <div className="flex flex-1 items-center justify-between gap-4">
             <div className="flex items-center gap-2">
               <RiFileTextLine className="size-5 text-muted-foreground" />
-              <h1 className="text-lg font-semibold">Documentation Feedback</h1>
+              <h1 className="text-lg font-semibold">Doc Feedback Triage</h1>
               <Badge variant="secondary" className="ml-1">
-                {unresolvedCount} unresolved
+                {cards.filter((c) => c.column === "new").length} new
               </Badge>
             </div>
-            <div className="relative w-full max-w-xs">
-              <RiSearchLine className="pointer-events-none absolute left-2 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                placeholder="Search feedback..."
-                className="pl-8"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
+            <div className="flex items-center gap-3">
+              <div className="relative w-full max-w-xs">
+                <RiSearchLine className="pointer-events-none absolute left-2 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  placeholder="Search feedback..."
+                  className="pl-8"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+              </div>
+              <Button size="sm" onClick={() => navigate("/create-issue")}>
+                <RiAddLine className="mr-1 size-4" />
+                Create Issue
+              </Button>
             </div>
           </div>
         </header>
 
-        {/* Content */}
-        <div className="flex flex-col gap-4 p-4 md:p-6">
-          <Tabs
-            defaultValue="all"
-            onValueChange={(value) => setActiveTab(value)}
-          >
-            <TabsList variant="line">
-              <TabsTrigger value="all">
-                All ({items.length})
-              </TabsTrigger>
-              <TabsTrigger value="unresolved">
-                Unresolved ({unresolvedCount})
-              </TabsTrigger>
-              <TabsTrigger value="critical">
-                Critical ({items.filter((f) => f.severity === "critical").length})
-              </TabsTrigger>
-              <TabsTrigger value="major">
-                Major ({items.filter((f) => f.severity === "major").length})
-              </TabsTrigger>
-              <TabsTrigger value="minor">
-                Minor ({items.filter((f) => f.severity === "minor").length})
-              </TabsTrigger>
-            </TabsList>
+        {/* Board */}
+        <div className="flex flex-1 gap-4 overflow-x-auto p-4 md:p-6">
+          {columns.map((col) => {
+            const colCards = getColumnCards(col.id)
+            return (
+              <section
+                key={col.id}
+                className="flex w-72 shrink-0 flex-col rounded-lg bg-muted/50 md:w-80"
+                aria-label={col.label}
+              >
+                {/* Column header */}
+                <div className="flex items-center gap-2 px-3 pt-3 pb-2">
+                  <span
+                    className={`size-2 rounded-full ${columnColors[col.id]}`}
+                  />
+                  <h2 className="text-sm font-semibold">{col.label}</h2>
+                  <span className="ml-auto text-xs text-muted-foreground">
+                    {colCards.length}
+                  </span>
+                </div>
 
-            <TabsContent value={activeTab} className="mt-4">
-              <div className="flex flex-col gap-3">
-                {filtered.length === 0 && (
-                  <p className="py-8 text-center text-sm text-muted-foreground">
-                    No feedback matches your filters.
-                  </p>
-                )}
-                {filtered.map((feedback) => {
-                  const severity = severityConfig[feedback.severity]
-                  const SeverityIcon = severity.icon
-                  const isExpanded = expandedId === feedback.id
-                  const wasJustAssigned = justAssigned === feedback.id
-
-                  return (
-                    <Card
-                      key={feedback.id}
-                      className={
-                        isExpanded
-                          ? "ring-1 ring-ring transition-shadow"
-                          : "transition-shadow"
-                      }
-                    >
-                      {/* Summary row — always visible */}
-                      <CardHeader
-                        className="cursor-pointer"
-                        onClick={() => handleExpand(feedback)}
+                {/* Cards */}
+                <div className="flex flex-1 flex-col gap-2 overflow-y-auto px-2 pb-2">
+                  {colCards.length === 0 && (
+                    <p className="px-2 py-6 text-center text-xs text-muted-foreground">
+                      {col.emptyText}
+                    </p>
+                  )}
+                  {colCards.map((card) => {
+                    const sev = severityConfig[card.severity]
+                    const SevIcon = sev.icon
+                    return (
+                      <Card
+                        key={card.id}
+                        className="cursor-pointer transition-shadow hover:shadow-md"
+                        onClick={() => openCard(card)}
                       >
-                        <div className="flex flex-1 items-start gap-3">
-                          <Avatar size="sm">
-                            <AvatarFallback>
-                              {feedback.avatarFallback}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div className="flex min-w-0 flex-1 flex-col gap-1">
-                            <div className="flex items-center gap-2">
-                              <span className="text-sm font-medium">
-                                {feedback.customerName}
-                              </span>
-                              <span className="text-xs text-muted-foreground">
-                                {feedback.date}
-                              </span>
-                            </div>
-                            <p className="text-sm text-card-foreground line-clamp-2">
-                              {feedback.feedbackText}
-                            </p>
-                            <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
-                              <RiFileTextLine className="size-3" />
-                              <span className="truncate">{feedback.docPage}</span>
-                              <span>·</span>
-                              <span>{feedback.thumbsDown} reports</span>
-                            </div>
-                          </div>
-                          <div className="flex shrink-0 items-center gap-2">
+                        <CardContent className="flex flex-col gap-2 p-3">
+                          {/* Top row: severity + reports */}
+                          <div className="flex items-center justify-between">
                             <Badge
                               variant="secondary"
-                              className={severity.className}
+                              className={`text-xs ${sev.className}`}
                             >
-                              <SeverityIcon className="mr-1 size-3" />
-                              {severity.label}
+                              <SevIcon className="mr-1 size-3" />
+                              {sev.label}
                             </Badge>
-                            {feedback.issueStatus && (
-                              <Badge
-                                variant="secondary"
-                                className={
-                                  statusConfig[feedback.issueStatus].className
-                                }
-                              >
-                                {feedback.issueStatus === "in_progress" && (
-                                  <RiLoader4Line className="mr-1 size-3 animate-spin" />
-                                )}
-                                {statusConfig[feedback.issueStatus].label}
-                              </Badge>
-                            )}
-                            <RiArrowRightSLine
-                              className={`size-4 text-muted-foreground transition-transform ${
-                                isExpanded ? "rotate-90" : ""
-                              }`}
-                            />
+                            <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                              <RiThumbDownLine className="size-3" />
+                              {card.thumbsDown}
+                            </span>
                           </div>
-                        </div>
-                      </CardHeader>
 
-                      {/* Expanded panel — issue creation */}
-                      {isExpanded && (
-                        <CardContent className="border-t border-border pt-4">
-                          {wasJustAssigned ? (
-                            <div className="flex items-center justify-center gap-2 py-6 text-sm font-medium text-success">
-                              <RiCheckLine className="size-5" />
-                              Issue created and assigned — agent is working on it
+                          {/* Feedback text */}
+                          <p className="text-sm leading-snug line-clamp-3">
+                            {card.feedbackText}
+                          </p>
+
+                          {/* Doc page */}
+                          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                            <RiFileTextLine className="size-3 shrink-0" />
+                            <span className="truncate">{card.docPage}</span>
+                          </div>
+
+                          {/* Footer: author + agent */}
+                          <div className="flex items-center justify-between pt-1">
+                            <div className="flex items-center gap-1.5">
+                              <Avatar size="sm">
+                                <AvatarFallback className="text-[10px]">
+                                  {card.avatarFallback}
+                                </AvatarFallback>
+                              </Avatar>
+                              <span className="text-xs text-muted-foreground">
+                                {card.customerName}
+                              </span>
                             </div>
-                          ) : feedback.issueStatus !== null ? (
-                            <div className="flex flex-col gap-3">
-                              <div className="flex items-center gap-2 text-sm">
-                                <RiRobot2Line className="size-4 text-muted-foreground" />
+                            {card.assignedAgent && (
+                              <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                                <RiRobot2Line className="size-3" />
                                 <span>
-                                  This feedback already has an issue{" "}
-                                  <Badge
-                                    variant="secondary"
-                                    className={
-                                      statusConfig[feedback.issueStatus]
-                                        .className
-                                    }
-                                  >
-                                    {statusConfig[feedback.issueStatus].label}
-                                  </Badge>
+                                  {aiAgents.find((a) => a.id === card.assignedAgent)?.name}
                                 </span>
                               </div>
-                              <div className="rounded-md bg-muted p-3">
-                                <p className="text-xs text-muted-foreground">
-                                  An AI agent is currently working on fixing this
-                                  documentation page. You'll be notified when the
-                                  fix is ready for review.
-                                </p>
-                              </div>
-                            </div>
-                          ) : (
-                            <div className="grid gap-4 md:grid-cols-2">
-                              {/* Left: context */}
-                              <div className="flex flex-col gap-3">
-                                <h3 className="text-sm font-semibold">
-                                  Feedback Context
-                                </h3>
-                                <div className="rounded-md bg-muted p-3">
-                                  <p className="text-sm">
-                                    "{feedback.feedbackText}"
-                                  </p>
-                                  <p className="mt-2 text-xs text-muted-foreground">
-                                    — {feedback.customerName}
-                                  </p>
-                                </div>
-                                <div className="flex flex-col gap-1 text-sm">
-                                  <div className="flex items-center gap-2">
-                                    <span className="font-medium">Page:</span>
-                                    <code className="rounded bg-muted px-1.5 py-0.5 text-xs">
-                                      {feedback.docPage}
-                                    </code>
-                                  </div>
-                                  <div className="flex items-center gap-2">
-                                    <span className="font-medium">Section:</span>
-                                    <span className="text-muted-foreground">
-                                      {feedback.docSection}
-                                    </span>
-                                  </div>
-                                  <div className="flex items-center gap-2">
-                                    <span className="font-medium">Reports:</span>
-                                    <span className="text-muted-foreground">
-                                      {feedback.thumbsDown} users flagged this
-                                    </span>
-                                  </div>
-                                </div>
-                              </div>
-
-                              {/* Right: issue form */}
-                              <div className="flex flex-col gap-3">
-                                <h3 className="text-sm font-semibold">
-                                  Create Issue
-                                </h3>
-                                <div className="flex flex-col gap-2">
-                                  <Label htmlFor={`title-${feedback.id}`}>
-                                    Issue title
-                                  </Label>
-                                  <Input
-                                    id={`title-${feedback.id}`}
-                                    value={issueTitle}
-                                    onChange={(e) =>
-                                      setIssueTitle(e.target.value)
-                                    }
-                                  />
-                                </div>
-                                <div className="flex flex-col gap-2">
-                                  <Label htmlFor={`desc-${feedback.id}`}>
-                                    Description
-                                  </Label>
-                                  <textarea
-                                    id={`desc-${feedback.id}`}
-                                    className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                                    value={issueDescription}
-                                    onChange={(e) =>
-                                      setIssueDescription(e.target.value)
-                                    }
-                                  />
-                                </div>
-
-                                <Separator />
-
-                                <div className="flex flex-col gap-2">
-                                  <Label>Assign AI Agent</Label>
-                                  <Select
-                                    value={selectedAgent}
-                                    onValueChange={(value) => setSelectedAgent(value ?? "")}
-                                  >
-                                    <SelectTrigger className="w-full">
-                                      <SelectValue placeholder="Select an agent..." />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      {aiAgents.map((agent) => (
-                                        <SelectItem
-                                          key={agent.id}
-                                          value={agent.id}
-                                          disabled={agent.status === "busy"}
-                                        >
-                                          <div className="flex items-center gap-2">
-                                            <RiRobot2Line className="size-4" />
-                                            <span>{agent.name}</span>
-                                            <span className="text-xs text-muted-foreground">
-                                              · {agent.speciality}
-                                            </span>
-                                            {agent.status === "busy" && (
-                                              <Badge
-                                                variant="secondary"
-                                                className="ml-1 text-xs"
-                                              >
-                                                Busy
-                                              </Badge>
-                                            )}
-                                          </div>
-                                        </SelectItem>
-                                      ))}
-                                    </SelectContent>
-                                  </Select>
-                                  {selectedAgent && (
-                                    <p className="text-xs text-muted-foreground">
-                                      {
-                                        aiAgents.find(
-                                          (a) => a.id === selectedAgent
-                                        )?.description
-                                      }
-                                    </p>
-                                  )}
-                                </div>
-
-                                <div className="flex justify-end gap-2 pt-1">
-                                  <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() => setExpandedId(null)}
-                                  >
-                                    Cancel
-                                  </Button>
-                                  <Button
-                                    size="sm"
-                                    disabled={!selectedAgent || !issueTitle}
-                                    onClick={() => handleAssign(feedback.id)}
-                                  >
-                                    <RiRobot2Line className="mr-1 size-4" />
-                                    Assign & Fix
-                                  </Button>
-                                </div>
-                              </div>
-                            </div>
-                          )}
+                            )}
+                          </div>
                         </CardContent>
-                      )}
-                    </Card>
-                  )
-                })}
-              </div>
-            </TabsContent>
-          </Tabs>
+                      </Card>
+                    )
+                  })}
+                </div>
+              </section>
+            )
+          })}
         </div>
+
+        {/* Card detail dialog */}
+        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+          <DialogContent className="max-w-lg">
+            {selectedCard && (
+              <>
+                <DialogHeader>
+                  <div className="flex items-center gap-2">
+                    <Badge
+                      variant="secondary"
+                      className={severityConfig[selectedCard.severity].className}
+                    >
+                      {severityConfig[selectedCard.severity].label}
+                    </Badge>
+                    <span className="text-xs text-muted-foreground">
+                      {selectedCard.date}
+                    </span>
+                  </div>
+                  <DialogTitle className="text-base">
+                    Feedback on{" "}
+                    <code className="rounded bg-muted px-1.5 py-0.5 text-sm font-normal">
+                      {selectedCard.docPage}
+                    </code>
+                  </DialogTitle>
+                </DialogHeader>
+
+                {/* Feedback quote */}
+                <div className="rounded-md bg-muted p-3">
+                  <p className="text-sm">"{selectedCard.feedbackText}"</p>
+                  <div className="mt-2 flex items-center gap-2">
+                    <Avatar size="sm">
+                      <AvatarFallback className="text-[10px]">
+                        {selectedCard.avatarFallback}
+                      </AvatarFallback>
+                    </Avatar>
+                    <span className="text-xs text-muted-foreground">
+                      {selectedCard.customerName}
+                    </span>
+                    <span className="text-xs text-muted-foreground">·</span>
+                    <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                      <RiThumbDownLine className="size-3" />
+                      {selectedCard.thumbsDown} reports
+                    </span>
+                  </div>
+                </div>
+
+                <div className="text-xs text-muted-foreground">
+                  <span className="font-medium text-foreground">Section:</span>{" "}
+                  {selectedCard.docSection}
+                </div>
+
+                <Separator />
+
+                {/* Actions based on current column */}
+                {selectedCard.column === "new" && (
+                  <div className="flex flex-col gap-3">
+                    <h3 className="text-sm font-semibold">Create Issue</h3>
+                    <div className="flex flex-col gap-2">
+                      <Label htmlFor="issue-title">Issue title</Label>
+                      <Input
+                        id="issue-title"
+                        value={issueTitle}
+                        onChange={(e) => setIssueTitle(e.target.value)}
+                      />
+                    </div>
+                    <div className="flex justify-end">
+                      <Button
+                        size="sm"
+                        disabled={!issueTitle}
+                        onClick={() =>
+                          moveCard(selectedCard.id, "issue_created")
+                        }
+                      >
+                        Create Issue
+                        <RiArrowRightLine className="ml-1 size-4" />
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                {selectedCard.column === "issue_created" && (
+                  <div className="flex flex-col gap-3">
+                    <h3 className="text-sm font-semibold">Assign AI Agent</h3>
+                    <div className="flex flex-col gap-2">
+                      <Label>Select agent</Label>
+                      <Select
+                        value={selectedAgent}
+                        onValueChange={(v) => setSelectedAgent(v ?? "")}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Choose an agent..." />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {aiAgents.map((agent) => (
+                            <SelectItem
+                              key={agent.id}
+                              value={agent.id}
+                              disabled={agent.status === "busy"}
+                            >
+                              <div className="flex items-center gap-2">
+                                <RiRobot2Line className="size-4" />
+                                <span>{agent.name}</span>
+                                <span className="text-xs text-muted-foreground">
+                                  · {agent.speciality}
+                                </span>
+                                {agent.status === "busy" && (
+                                  <Badge variant="secondary" className="ml-1 text-xs">
+                                    Busy
+                                  </Badge>
+                                )}
+                              </div>
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="flex justify-end">
+                      <Button
+                        size="sm"
+                        disabled={!selectedAgent}
+                        onClick={() =>
+                          moveCard(
+                            selectedCard.id,
+                            "agent_working",
+                            selectedAgent
+                          )
+                        }
+                      >
+                        <RiRobot2Line className="mr-1 size-4" />
+                        Assign & Fix
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                {selectedCard.column === "agent_working" && (
+                  <div className="flex flex-col gap-3">
+                    <div className="flex items-center gap-2 text-sm">
+                      <RiLoader4Line className="size-4 animate-spin text-chart-1" />
+                      <span className="font-medium">Agent is working on this</span>
+                    </div>
+                    <div className="flex items-center gap-2 rounded-md bg-muted p-3">
+                      <RiRobot2Line className="size-4 text-muted-foreground" />
+                      <span className="text-sm">
+                        {aiAgents.find((a) => a.id === selectedCard.assignedAgent)?.name}
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        is rewriting the documentation
+                      </span>
+                    </div>
+                    <div className="flex justify-end">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() =>
+                          moveCard(selectedCard.id, "resolved")
+                        }
+                      >
+                        <RiCheckLine className="mr-1 size-4" />
+                        Mark Resolved
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                {selectedCard.column === "resolved" && (
+                  <div className="flex items-center gap-2 text-sm text-success">
+                    <RiCheckLine className="size-5" />
+                    <span className="font-medium">
+                      This documentation issue has been resolved
+                    </span>
+                  </div>
+                )}
+              </>
+            )}
+          </DialogContent>
+        </Dialog>
       </main>
     </div>
   )

@@ -20,6 +20,7 @@
     /* body / label  → text-sm (14px / medium / lh 20px)  */
     /* label-sm      → text-xs (12px / medium / lh 14px)  */
 
+    /* Semantic color aliases — theme-switchable via .nvidia-light */
     --color-sidebar-ring: var(--sidebar-ring);
     --color-sidebar-border: var(--sidebar-border);
     --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -56,6 +57,61 @@
     --color-card: var(--card);
     --color-foreground: var(--foreground);
     --color-background: var(--background);
+
+    /* Primitive color scales — generates bg-*, text-*, border-* utilities
+     * e.g. bg-red-500, text-nvidia-green-200, border-blue-300            */
+    --color-white: var(--white);
+
+    --color-neutral-50:  var(--neutral-50);
+    --color-neutral-100: var(--neutral-100);
+    --color-neutral-200: var(--neutral-200);
+    --color-neutral-500: var(--neutral-500);
+    --color-neutral-900: var(--neutral-900);
+    --color-neutral-950: var(--neutral-950);
+
+    --color-red-100: var(--red-100);
+    --color-red-200: var(--red-200);
+    --color-red-300: var(--red-300);
+    --color-red-400: var(--red-400);
+    --color-red-500: var(--red-500);
+    --color-red-600: var(--red-600);
+    --color-red-700: var(--red-700);
+    --color-red-800: var(--red-800);
+    --color-red-900: var(--red-900);
+
+    --color-yellow-100: var(--yellow-100);
+    --color-yellow-200: var(--yellow-200);
+    --color-yellow-300: var(--yellow-300);
+    --color-yellow-400: var(--yellow-400);
+    --color-yellow-500: var(--yellow-500);
+    --color-yellow-600: var(--yellow-600);
+    --color-yellow-700: var(--yellow-700);
+    --color-yellow-800: var(--yellow-800);
+    --color-yellow-900: var(--yellow-900);
+
+    --color-green-100: var(--green-100);
+    --color-green-700: var(--green-700);
+
+    --color-blue-100: var(--blue-100);
+    --color-blue-200: var(--blue-200);
+    --color-blue-300: var(--blue-300);
+    --color-blue-400: var(--blue-400);
+    --color-blue-500: var(--blue-500);
+    --color-blue-600: var(--blue-600);
+    --color-blue-700: var(--blue-700);
+    --color-blue-800: var(--blue-800);
+    --color-blue-900: var(--blue-900);
+
+    --color-nvidia-green-100: var(--nvidia-green-100);
+    --color-nvidia-green-200: var(--nvidia-green-200);
+    --color-nvidia-green-300: var(--nvidia-green-300);
+    --color-nvidia-green-400: var(--nvidia-green-400);
+    --color-nvidia-green-500: var(--nvidia-green-500);
+    --color-nvidia-green-600: var(--nvidia-green-600);
+    --color-nvidia-green-700: var(--nvidia-green-700);
+    --color-nvidia-green-800: var(--nvidia-green-800);
+    --color-nvidia-green-900: var(--nvidia-green-900);
+
     --radius-sm: calc(var(--radius) * 0.6);
     --radius-md: calc(var(--radius) * 0.8);
     --radius-lg: var(--radius);
@@ -89,14 +145,26 @@
     --neutral-950: #0A0A0A;
 
     /* Red */
+    --red-100: #FEF2F2;
     --red-200: #FECACA;
+    --red-300: #FCA5A5;
+    --red-400: #F87171;
+    --red-500: #EF4444;
+    --red-600: #DC2626;
     --red-700: #B91C1C;
+    --red-800: #991B1B;
+    --red-900: #7F1D1D;
 
     /* Yellow */
     --yellow-100: #FEF9C3;
     --yellow-200: #FEF08A;
+    --yellow-300: #FDE047;
+    --yellow-400: #FACC15;
+    --yellow-500: #EAB308;
+    --yellow-600: #CA8A04;
     --yellow-700: #A16207;
     --yellow-800: #854D0E;
+    --yellow-900: #713F12;
 
     /* Green */
     --green-100: #DCFCE7;
@@ -104,19 +172,26 @@
 
     /* Blue */
     --blue-100: #C2E6FF;
+    --blue-200: #93CFFF;
     --blue-300: #70B8FF;
     --blue-400: #3B9EFF;
     --blue-500: #0090FF;
     --blue-600: #2870BD;
+    --blue-700: #1A5499;
+    --blue-800: #133F74;
+    --blue-900: #0D2A50;
 
     /* NVIDIA Green
-     * Partial scale — steps added as designed.
      * Step 500 = NVIDIA brand green.            */
+    --nvidia-green-100: #EEFCD7;
     --nvidia-green-200: #CBF58A;
+    --nvidia-green-300: #AAEA49;
+    --nvidia-green-400: #8DCC14;
     --nvidia-green-500: #76B900;   /* ← NVIDIA brand green */
     --nvidia-green-600: #5F9400;
     --nvidia-green-700: #487000;
     --nvidia-green-800: #375500;
+    --nvidia-green-900: #1E3200;
 
     /* Radius */
     --radius-base: 4px;

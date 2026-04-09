@@ -1,7 +1,6 @@
-export type Severity = "critical" | "major" | "minor"
-export type IssueStatus = "open" | "in_progress" | "resolved"
+export type BoardColumn = "new" | "issue_created" | "agent_working" | "resolved"
 
-export interface DocFeedbackEntry {
+export interface DocFeedbackCard {
   id: string
   customerName: string
   avatarFallback: string
@@ -9,15 +8,16 @@ export interface DocFeedbackEntry {
   docPage: string
   docSection: string
   date: string
-  severity: Severity
-  issueStatus: IssueStatus | null
+  severity: "critical" | "major" | "minor"
   thumbsDown: number
+  column: BoardColumn
+  assignedAgent?: string
+  issueTitle?: string
 }
 
 export interface AIAgent {
   id: string
   name: string
-  description: string
   avatarFallback: string
   speciality: string
   status: "available" | "busy"
@@ -27,7 +27,6 @@ export const aiAgents: AIAgent[] = [
   {
     id: "agent-1",
     name: "DocFix Agent",
-    description: "Rewrites unclear sections, fixes code examples, and improves step-by-step instructions.",
     avatarFallback: "DF",
     speciality: "Technical writing",
     status: "available",
@@ -35,7 +34,6 @@ export const aiAgents: AIAgent[] = [
   {
     id: "agent-2",
     name: "API Docs Agent",
-    description: "Specializes in API reference pages, endpoint descriptions, and request/response examples.",
     avatarFallback: "AD",
     speciality: "API documentation",
     status: "available",
@@ -43,14 +41,13 @@ export const aiAgents: AIAgent[] = [
   {
     id: "agent-3",
     name: "Tutorial Agent",
-    description: "Rebuilds tutorials and quickstart guides with working code samples and clear prerequisites.",
     avatarFallback: "TA",
     speciality: "Tutorials & guides",
     status: "busy",
   },
 ]
 
-export const docFeedbackData: DocFeedbackEntry[] = [
+export const initialCards: DocFeedbackCard[] = [
   {
     id: "df-1",
     customerName: "Marcus Johnson",
@@ -60,8 +57,8 @@ export const docFeedbackData: DocFeedbackEntry[] = [
     docSection: "Getting Started > Installation",
     date: "2026-04-02",
     severity: "critical",
-    issueStatus: null,
     thumbsDown: 47,
+    column: "new",
   },
   {
     id: "df-2",
@@ -72,8 +69,8 @@ export const docFeedbackData: DocFeedbackEntry[] = [
     docSection: "Tutorials > Model Optimization",
     date: "2026-04-02",
     severity: "major",
-    issueStatus: null,
     thumbsDown: 32,
+    column: "new",
   },
   {
     id: "df-3",
@@ -84,8 +81,8 @@ export const docFeedbackData: DocFeedbackEntry[] = [
     docSection: "Quickstart > Running Your First Model",
     date: "2026-04-01",
     severity: "critical",
-    issueStatus: null,
     thumbsDown: 28,
+    column: "new",
   },
   {
     id: "df-4",
@@ -96,8 +93,8 @@ export const docFeedbackData: DocFeedbackEntry[] = [
     docSection: "Guides > Multi-GPU Setup",
     date: "2026-04-01",
     severity: "major",
-    issueStatus: null,
     thumbsDown: 19,
+    column: "new",
   },
   {
     id: "df-5",
@@ -108,8 +105,9 @@ export const docFeedbackData: DocFeedbackEntry[] = [
     docSection: "Setup > Container Runtime",
     date: "2026-03-31",
     severity: "minor",
-    issueStatus: null,
     thumbsDown: 14,
+    column: "issue_created",
+    issueTitle: "Improve: runtime setup",
   },
   {
     id: "df-6",
@@ -120,8 +118,9 @@ export const docFeedbackData: DocFeedbackEntry[] = [
     docSection: "API Reference > DataFrame.merge()",
     date: "2026-03-31",
     severity: "minor",
-    issueStatus: null,
     thumbsDown: 11,
+    column: "issue_created",
+    issueTitle: "Improve: cudf api reference",
   },
   {
     id: "df-7",
@@ -132,8 +131,10 @@ export const docFeedbackData: DocFeedbackEntry[] = [
     docSection: "Samples > Video Analytics Pipelines",
     date: "2026-03-30",
     severity: "critical",
-    issueStatus: "in_progress",
     thumbsDown: 39,
+    column: "agent_working",
+    issueTitle: "Fix: sdk samples",
+    assignedAgent: "agent-1",
   },
   {
     id: "df-8",
@@ -144,21 +145,19 @@ export const docFeedbackData: DocFeedbackEntry[] = [
     docSection: "Guides > Fine-Tuning LLMs",
     date: "2026-03-29",
     severity: "major",
-    issueStatus: null,
     thumbsDown: 24,
+    column: "resolved",
+    issueTitle: "Update: fine tuning guide",
+    assignedAgent: "agent-2",
   },
 ]
 
-export function generateIssueTitle(feedback: DocFeedbackEntry): string {
-  const prefixes: Record<Severity, string> = {
+export function generateIssueTitle(card: DocFeedbackCard): string {
+  const prefixes: Record<string, string> = {
     critical: "Fix",
     major: "Update",
     minor: "Improve",
   }
-  const pageName = feedback.docPage.split("/").pop()?.replace(/-/g, " ") ?? "documentation"
-  return `${prefixes[feedback.severity]}: ${pageName}`
-}
-
-export function generateIssueDescription(feedback: DocFeedbackEntry): string {
-  return `## Problem\n${feedback.feedbackText}\n\n## Location\n- **Page:** ${feedback.docPage}\n- **Section:** ${feedback.docSection}\n\n## Customer impact\n${feedback.thumbsDown} users reported this issue.\n\n## Expected fix\nReview and correct the documentation at the specified section.`
+  const pageName = card.docPage.split("/").pop()?.replace(/-/g, " ") ?? "documentation"
+  return `${prefixes[card.severity]}: ${pageName}`
 }

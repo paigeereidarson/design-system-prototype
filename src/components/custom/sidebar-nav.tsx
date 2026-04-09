@@ -1,6 +1,8 @@
+import { useNavigate, useLocation } from "react-router-dom"
 import {
   RiDashboardLine,
   RiMessage2Line,
+  RiFileTextLine,
   RiBarChartLine,
   RiSettings3Line,
 } from "@remixicon/react"
@@ -10,10 +12,11 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import nvidiaLogoHorz from "@/assets/nvidia-logo-horz.png"
 
 const navItems = [
-  { label: "Overview",  icon: RiDashboardLine, active: true  },
-  { label: "Feedback",  icon: RiMessage2Line,  active: false },
-  { label: "Analytics", icon: RiBarChartLine,  active: false },
-  { label: "Settings",  icon: RiSettings3Line, active: false },
+  { label: "Overview",       icon: RiDashboardLine, href: "/"             },
+  { label: "Feedback",       icon: RiMessage2Line,  href: null            },
+  { label: "Doc Triage",     icon: RiFileTextLine,  href: "/doc-feedback" },
+  { label: "Analytics",      icon: RiBarChartLine,  href: null            },
+  { label: "Settings",       icon: RiSettings3Line, href: null            },
 ]
 
 interface SidebarNavProps {
@@ -21,6 +24,9 @@ interface SidebarNavProps {
 }
 
 export function SidebarNav({ className }: SidebarNavProps) {
+  const navigate = useNavigate()
+  const location = useLocation()
+
   return (
     <nav
       className={cn(
@@ -33,20 +39,29 @@ export function SidebarNav({ className }: SidebarNavProps) {
       </div>
 
       <div className="flex flex-1 flex-col gap-1 p-2">
-        {navItems.map((item) => (
-          <Button
-            key={item.label}
-            variant="ghost"
-            className={cn(
-              "justify-start gap-2 text-sidebar-foreground",
-              item.active &&
-                "bg-sidebar-accent text-sidebar-accent-foreground"
-            )}
-          >
-            <item.icon className="size-4" />
-            {item.label}
-          </Button>
-        ))}
+        {navItems.map((item) => {
+          const isActive = item.href
+            ? item.href === "/"
+              ? location.pathname === "/"
+              : location.pathname.startsWith(item.href)
+            : false
+          return (
+            <Button
+              key={item.label}
+              variant="ghost"
+              disabled={!item.href}
+              onClick={() => item.href && navigate(item.href)}
+              className={cn(
+                "justify-start gap-2 text-sidebar-foreground",
+                isActive && "bg-sidebar-accent text-sidebar-accent-foreground",
+                !item.href && "opacity-40 cursor-not-allowed"
+              )}
+            >
+              <item.icon className="size-4" />
+              {item.label}
+            </Button>
+          )
+        })}
       </div>
 
       <div className="border-t border-sidebar-border p-3">

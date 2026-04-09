@@ -1,5 +1,6 @@
 import { useState } from "react"
-import { RiSearchLine } from "@remixicon/react"
+import { useNavigate } from "react-router-dom"
+import { RiSearchLine, RiAddLine } from "@remixicon/react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
@@ -16,6 +17,7 @@ function filterFeedback(tab: string) {
 }
 
 export function Dashboard() {
+  const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState("all")
   const filtered = filterFeedback(activeTab)
 
@@ -41,7 +43,10 @@ export function Dashboard() {
                   className="pl-8"
                 />
               </div>
-              <Button>Create issue</Button>
+              <Button onClick={() => navigate("/create-issue")}>
+                <RiAddLine className="mr-1 size-4" />
+                Create Issue
+              </Button>
             </div>
           </div>
         </header>
