@@ -19,6 +19,15 @@ const badgeVariants = cva(
         ghost:
           "hover:bg-muted hover:text-muted-foreground dark:hover:bg-muted/50",
         link: "text-primary underline-offset-4 hover:underline",
+        // Status text badges — uses Figma semantic tokens
+        success:
+          "bg-success text-success-foreground",
+        warning:
+          "bg-warn text-warn-foreground",
+        critical:
+          "bg-destructive text-destructive-foreground",
+        // Dot badge — pure color circle, no text
+        dot: "h-3 w-3 rounded-full border-0 px-0 py-0",
       },
     },
     defaultVariants: {

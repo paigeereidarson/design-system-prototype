@@ -101,10 +101,13 @@
     --accent: #F5F5F5;               /* Figma: neutral/100 */
     --accent-foreground: #171717;    /* Figma: neutral/900 */
 
-    /* Semantic */
-    --destructive: #DC2626;          /* Figma: red/600 */
-    --warn: #DC2626;                 /* Figma: red/600 */
-    --success: #DC2626;              /* Figma: red/600 */
+    /* Semantic — badge background + foreground pairs */
+    --destructive: #fecaca;          /* red-200: badge bg  */
+    --destructive-foreground: #b91c1c; /* red-700: badge text */
+    --warn: #fef9c3;                 /* yellow-100: badge bg  */
+    --warn-foreground: #a16207;      /* yellow-700: badge text */
+    --success: #dcfce7;              /* green-100: badge bg  */
+    --success-foreground: #15803d;   /* green-700: badge text */
 
     /* Borders & Input */
     --border: #E5E5E5;               /* Figma: neutral/200 */
@@ -165,10 +168,13 @@
     --accent: #202221;               /* Figma: sage/3 */
     --accent-foreground: #63706B;    /* Figma: sage/9 */
 
-    /* Semantic */
-    --destructive: #E5484D;          /* Figma: red/9 */
-    --warn: #FFC53D;                 /* Figma: amber/9 */
-    --success: #33B074;              /* Figma: green/10 */
+    /* Semantic — badge background + foreground pairs */
+    --destructive: rgba(229, 72, 77, 0.15);  /* red/9 at 15%: badge bg  */
+    --destructive-foreground: #E5484D;       /* red/9: badge text */
+    --warn: rgba(255, 197, 61, 0.15);        /* amber/9 at 15%: badge bg  */
+    --warn-foreground: #FFC53D;              /* amber/9: badge text */
+    --success: rgba(51, 176, 116, 0.15);     /* green/10 at 15%: badge bg  */
+    --success-foreground: #33B074;           /* green/10: badge text */
 
     /* Borders & Input */
     --border: #444947;               /* Figma: sage/7 */
@@ -282,10 +288,13 @@
     --accent:               var(--nvidia-green-9);
     --accent-foreground:    var(--gray-1);
 
-    /* Semantic states */
-    --destructive:          var(--rdx-red-9);
-    --warn:                 var(--rdx-amber-9);
-    --success:              var(--rdx-green-10);
+    /* Semantic states — badge background + foreground pairs */
+    --destructive:          rgba(229, 72, 77, 0.15);   /* badge bg  */
+    --destructive-foreground: var(--rdx-red-9);        /* badge text */
+    --warn:                 rgba(255, 197, 61, 0.15);  /* badge bg  */
+    --warn-foreground:      var(--rdx-amber-9);        /* badge text */
+    --success:              rgba(51, 176, 116, 0.15);  /* badge bg  */
+    --success-foreground:   var(--rdx-green-10);       /* badge text */
 
     /* Borders & input */
     --border:               var(--gray-4);
@@ -382,22 +391,13 @@
     --accent:               var(--nvidia-green-500);
     --accent-foreground:    var(--neutral-950);
 
-    /* Semantic states — extracted directly from Figma selection (MCP)
-     * Each token = solid background color; paired *-foreground = text color.
-     * Source: NVIDIA Styleguide v0 → Badge component, NVIDIA-light mode.
-     *
-     *  success     → nvidia-green/200 → #CBF58A  (solid light green BG)
-     *  success-fg  → nvidia-green/800 → #375500  (dark green text)
-     *  destructive → red/200          → #FECACA  (solid light pink BG)
-     *  destruct-fg → red/700          → #B91C1C  (dark red text)
-     *  warn        → yellow/200       → #FEF08A  (solid yellow BG)
-     *  warn-fg     → yellow/800       → #854D0E  (dark amber text)       */
-    --destructive:             var(--red-200);
-    --destructive-foreground:  var(--red-700);
-    --warn:                    var(--yellow-200);
-    --warn-foreground:         var(--yellow-800);
-    --success:                 var(--nvidia-green-200);
-    --success-foreground:      var(--nvidia-green-800);
+    /* Semantic states — Source: Figma Badge component, NVIDIA-light mode */
+    --destructive:             var(--red-200);           /* badge bg  */
+    --destructive-foreground:  var(--red-700);           /* badge text */
+    --warn:                    var(--yellow-200);        /* badge bg  */
+    --warn-foreground:         var(--yellow-800);        /* badge text */
+    --success:                 var(--nvidia-green-200);  /* badge bg  */
+    --success-foreground:      var(--nvidia-green-800);  /* badge text */
 
     /* Borders & input */
     --border:               var(--neutral-200);
@@ -411,8 +411,8 @@
     --chart-4:              var(--nvidia-green-800);
     --chart-5:              var(--nvidia-green-800);
 
-    /* Radius — sharp (matches Figma radius-xs = 2px) */
-    --radius: 2px;
+    /* Radius — radius-xs = 4px */
+    --radius: 4px;
 
     /* Sidebar */
     --sidebar:                    var(--neutral-50);
