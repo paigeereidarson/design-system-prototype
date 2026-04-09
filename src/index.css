@@ -66,91 +66,21 @@
 }
 
 /* =============================================
- * Light Mode (default)
- * Source: Figma "mode" collection → light mode
+ * Primitives
+ * Source of truth for all raw values.
+ * Do not use these directly in components —
+ * reference semantic tokens in .nvidia-light.
+ *
+ * Scales use Tailwind numbering (50–950).
+ * Partial scales are intentional — new steps
+ * are added only when designed, not extrapolated.
  * ============================================= */
 :root {
-    /* Core */
-    --background: #FFFFFF;           /* Figma: white */
-    --foreground: #0A0A0A;           /* Figma: neutral/950 */
 
-    /* Card */
-    --card: #FFFFFF;                 /* Figma: white */
-    --card-foreground: #0A0A0A;      /* Figma: neutral/950 */
+    /* White */
+    --white: #FFFFFF;
 
-    /* Popover */
-    --popover: #FFFFFF;              /* Figma: white */
-    --popover-foreground: #0A0A0A;   /* Figma: neutral/950 */
-
-    /* Primary */
-    --primary: #171717;              /* Figma: neutral/900 */
-    --primary-foreground: #FAFAFA;   /* Figma: neutral/50 */
-
-    /* Secondary */
-    --secondary: #F5F5F5;            /* Figma: neutral/100 */
-    --secondary-foreground: #0A0A0A; /* Figma: neutral/950 */
-
-    /* Muted */
-    --muted: #F5F5F5;                /* Figma: neutral/100 */
-    --muted-foreground: #737373;     /* Figma: neutral/500 */
-
-    /* Accent */
-    --accent: #F5F5F5;               /* Figma: neutral/100 */
-    --accent-foreground: #171717;    /* Figma: neutral/900 */
-
-    /* Semantic — badge background + foreground pairs */
-    --destructive: #fecaca;          /* red-200: badge bg  */
-    --destructive-foreground: #b91c1c; /* red-700: badge text */
-    --warn: #fef9c3;                 /* yellow-100: badge bg  */
-    --warn-foreground: #a16207;      /* yellow-700: badge text */
-    --success: #dcfce7;              /* green-100: badge bg  */
-    --success-foreground: #15803d;   /* green-700: badge text */
-
-    /* Borders & Input */
-    --border: #E5E5E5;               /* Figma: neutral/200 */
-    --input: #E5E5E5;                /* Figma: neutral/200 */
-    --ring: #737373;                 /* Figma: neutral/500 */
-
-    /* Charts */
-    --chart-1: #2870BD;              /* Figma: blue/8 */
-    --chart-2: #0090FF;              /* Figma: blue/9 */
-    --chart-3: #3B9EFF;              /* Figma: blue/10 */
-    --chart-4: #70B8FF;              /* Figma: blue/11 */
-    --chart-5: #C2E6FF;              /* Figma: blue/12 */
-
-    /* Radius — from Figma mode collection */
-    --radius: 10px;                  /* Figma: radius-lg = 10px */
-
-    /* Sidebar */
-    --sidebar: #FAFAFA;              /* Figma: neutral/50 */
-    --sidebar-foreground: #0A0A0A;   /* Figma: neutral/950 */
-    --sidebar-primary: #171717;      /* Figma: neutral/900 */
-    --sidebar-primary-foreground: #FAFAFA; /* Figma: neutral/50 */
-    --sidebar-accent: #F5F5F5;       /* Figma: neutral/100 */
-    --sidebar-accent-foreground: #171717; /* Figma: neutral/900 */
-    --sidebar-border: #E5E5E5;       /* Figma: neutral/200 */
-    --sidebar-ring: #737373;         /* Figma: neutral/500 */
-}
-
-/* =============================================
- * NVIDIA Light Mode
- * Source: Figma mode collection → "NVIDIA- light mode"
- * Mirrors the same two-layer alias structure as .nvidia (dark)
- * ============================================= */
-.nvidia-light {
-
-    /* =============================================
-     * Layer 1 — Primitives
-     * ============================================= */
-
-    /* nvidia-green scale (tw/colors → nvidia-green)  */
-    --nvidia-green-200: #CBF58A;
-    --nvidia-green-500: #76B900;   /* ← NVIDIA brand green */
-    --nvidia-green-600: #5F9400;
-    --nvidia-green-700: #487000;
-    --nvidia-green-800: #375500;
-
-    /* Tailwind neutral scale (resolved)              */
+    /* Neutral */
     --neutral-50:  #FAFAFA;
     --neutral-100: #F5F5F5;
     --neutral-200: #E5E5E5;
@@ -158,30 +88,63 @@
     --neutral-900: #171717;
     --neutral-950: #0A0A0A;
 
-    /* Semantic state primitives                      */
-    --red-200:    #FECACA;   /* Figma: red/200    */
-    --red-700:    #B91C1C;   /* Figma: red/700    */
-    --yellow-200: #FEF08A;   /* Figma: yellow/200 */
-    --yellow-800: #854D0E;   /* Figma: yellow/800 */
+    /* Red */
+    --red-200: #FECACA;
+    --red-700: #B91C1C;
 
-    /* =============================================
-     * Layer 2 — Semantic tokens
-     * Figma: mode → NVIDIA-light mode column
-     * ============================================= */
+    /* Yellow */
+    --yellow-100: #FEF9C3;
+    --yellow-200: #FEF08A;
+    --yellow-700: #A16207;
+    --yellow-800: #854D0E;
+
+    /* Green */
+    --green-100: #DCFCE7;
+    --green-700: #15803D;
+
+    /* Blue */
+    --blue-100: #C2E6FF;
+    --blue-300: #70B8FF;
+    --blue-400: #3B9EFF;
+    --blue-500: #0090FF;
+    --blue-600: #2870BD;
+
+    /* NVIDIA Green
+     * Partial scale — steps added as designed.
+     * Step 500 = NVIDIA brand green.            */
+    --nvidia-green-200: #CBF58A;
+    --nvidia-green-500: #76B900;   /* ← NVIDIA brand green */
+    --nvidia-green-600: #5F9400;
+    --nvidia-green-700: #487000;
+    --nvidia-green-800: #375500;
+
+    /* Radius */
+    --radius-base: 4px;
+}
+
+/* =============================================
+ * NVIDIA Light Theme
+ * Source: index.css primitives → :root
+ *
+ * Apply class="nvidia-light" to the root element.
+ * All values reference primitives defined in :root.
+ * To update a value: change the primitive in :root.
+ * ============================================= */
+.nvidia-light {
 
     /* Core */
-    --background:           #FFFFFF;
-    --foreground:           var(--neutral-950);
+    --background:         var(--white);
+    --foreground:         var(--neutral-950);
 
     /* Card */
-    --card:                 #FFFFFF;
-    --card-foreground:      var(--neutral-950);
+    --card:               var(--white);
+    --card-foreground:    var(--neutral-950);
 
     /* Popover */
-    --popover:              #FFFFFF;
-    --popover-foreground:   var(--neutral-950);
+    --popover:            var(--white);
+    --popover-foreground: var(--neutral-950);
 
-    /* Primary — NVIDIA Green */
+    /* Primary — NVIDIA brand green */
     --primary:              var(--nvidia-green-500);
     --primary-foreground:   var(--neutral-950);
 
@@ -197,28 +160,28 @@
     --accent:               var(--nvidia-green-500);
     --accent-foreground:    var(--neutral-950);
 
-    /* Semantic states — Source: Figma Badge component, NVIDIA-light mode */
-    --destructive:             var(--red-200);           /* badge bg  */
-    --destructive-foreground:  var(--red-700);           /* badge text */
-    --warn:                    var(--yellow-200);        /* badge bg  */
-    --warn-foreground:         var(--yellow-800);        /* badge text */
-    --success:                 var(--nvidia-green-200);  /* badge bg  */
-    --success-foreground:      var(--nvidia-green-800);  /* badge text */
+    /* Semantic states — badge background + foreground pairs */
+    --destructive:            var(--red-200);
+    --destructive-foreground: var(--red-700);
+    --warn:                   var(--yellow-200);
+    --warn-foreground:        var(--yellow-800);
+    --success:                var(--nvidia-green-200);
+    --success-foreground:     var(--nvidia-green-800);
 
     /* Borders & input */
-    --border:               var(--neutral-200);
-    --input:                var(--neutral-200);
-    --ring:                 var(--nvidia-green-500);
+    --border: var(--neutral-200);
+    --input:  var(--neutral-200);
+    --ring:   var(--nvidia-green-500);
 
-    /* Charts — nvidia-green ramp (dark to light) */
-    --chart-1:              var(--nvidia-green-500);
-    --chart-2:              var(--nvidia-green-600);
-    --chart-3:              var(--nvidia-green-700);
-    --chart-4:              var(--nvidia-green-800);
-    --chart-5:              var(--nvidia-green-800);
+    /* Charts */
+    --chart-1: var(--blue-600);
+    --chart-2: var(--blue-500);
+    --chart-3: var(--blue-400);
+    --chart-4: var(--blue-300);
+    --chart-5: var(--blue-100);
 
-    /* Radius — radius-xs = 4px */
-    --radius: 4px;
+    /* Radius */
+    --radius: var(--radius-base);
 
     /* Sidebar */
     --sidebar:                    var(--neutral-50);
@@ -230,9 +193,7 @@
     --sidebar-border:             var(--neutral-200);
     --sidebar-ring:               var(--nvidia-green-500);
 
-    /* Typography — Figma uses "Inter" (Medium 500 / Bold 700)
-       Inter Variable is the variable-font build, covering all weights.
-       'Inter' is a static fallback for non-variable font stacks.          */
+    /* Typography */
     --font-sans:    'Inter Variable', 'Inter', system-ui, sans-serif;
     --font-heading: 'Inter Variable', 'Inter', system-ui, sans-serif;
 }
