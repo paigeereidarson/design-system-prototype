@@ -130,17 +130,9 @@ export function Playground() {
         <div className="flex flex-wrap items-center gap-3">
           <Button>Default</Button>
           <Button variant="secondary">Secondary</Button>
-          <Button variant="outline">Outline</Button>
           <Button variant="ghost">Ghost</Button>
-          <Button variant="destructive">Destructive</Button>
           <Button variant="link">Link</Button>
           <Button disabled>Disabled</Button>
-        </div>
-        <div className="flex flex-wrap items-center gap-3">
-          <Button size="xs">Extra Small</Button>
-          <Button size="sm">Small</Button>
-          <Button size="default">Default</Button>
-          <Button size="lg">Large</Button>
           <Button size="icon">
             <i className="ri-add-line" style={{ fontSize: "16px" }} />
           </Button>
@@ -154,12 +146,21 @@ export function Playground() {
         <div className="flex flex-wrap items-center gap-3">
           <Badge>Default</Badge>
           <Badge variant="secondary">Secondary</Badge>
-          <Badge variant="outline">Outline</Badge>
-          <Badge variant="destructive">Destructive</Badge>
+          <Badge variant="secondary">Outline</Badge>
           <Badge variant="success">Success</Badge>
           <Badge variant="warning">Warning</Badge>
           <Badge variant="critical">Critical</Badge>
-          <Badge variant="dot" className="bg-success-foreground" />
+        </div>
+        <div className="flex flex-wrap items-center gap-3">
+          <Badge variant="success-solid">Success Solid</Badge>
+          <Badge variant="warning-solid">Warning Solid</Badge>
+          <Badge variant="critical-solid">Critical Solid</Badge>
+        </div>
+        <div className="flex flex-wrap items-center gap-3">
+          <Badge variant="dot" />
+          <Badge variant="dot-success" />
+          <Badge variant="dot-warning" />
+          <Badge variant="dot-critical" />
         </div>
       </Section>
 
@@ -248,7 +249,7 @@ export function Playground() {
               </div>
             </CardContent>
             <CardFooter>
-              <Button size="sm" variant="outline">View Details</Button>
+              <Button size="default" variant="secondary">View Details</Button>
             </CardFooter>
           </Card>
           <Card>
@@ -263,7 +264,7 @@ export function Playground() {
               </div>
             </CardContent>
             <CardFooter>
-              <Button size="sm" variant="outline">View Details</Button>
+              <Button size="default" variant="secondary">View Details</Button>
             </CardFooter>
           </Card>
           <Card>
@@ -278,7 +279,7 @@ export function Playground() {
               </div>
             </CardContent>
             <CardFooter>
-              <Button size="sm" variant="outline">View Details</Button>
+              <Button size="default" variant="secondary">View Details</Button>
             </CardFooter>
           </Card>
         </div>
@@ -419,7 +420,7 @@ export function Playground() {
       {/* ── Dialog ──────────────────────────────────── */}
       <Section title="Dialog">
         <Dialog>
-          <DialogTrigger render={<Button variant="outline" />}>
+          <DialogTrigger render={<Button variant="secondary" />}>
             Open Dialog
           </DialogTrigger>
           <DialogContent>
@@ -445,7 +446,7 @@ export function Playground() {
       {/* ── Sheet ───────────────────────────────────── */}
       <Section title="Sheet">
         <Sheet>
-          <SheetTrigger render={<Button variant="outline" />}>
+          <SheetTrigger render={<Button variant="secondary" />}>
             Open Sheet
           </SheetTrigger>
           <SheetContent>
@@ -478,7 +479,7 @@ export function Playground() {
       {/* ── Popover ─────────────────────────────────── */}
       <Section title="Popover">
         <Popover>
-          <PopoverTrigger render={<Button variant="outline" />}>
+          <PopoverTrigger render={<Button variant="secondary" />}>
             <i className="ri-filter-line" style={{ fontSize: "16px" }} />
             Filter
           </PopoverTrigger>
@@ -499,7 +500,7 @@ export function Playground() {
                 <Checkbox id="f-healthy" />
                 <Label htmlFor="f-healthy">Healthy</Label>
               </div>
-              <Button size="sm">Apply</Button>
+              <Button size="default">Apply</Button>
             </div>
           </PopoverContent>
         </Popover>
@@ -511,19 +512,19 @@ export function Playground() {
       <Section title="Tooltip">
         <div className="flex gap-3">
           <Tooltip>
-            <TooltipTrigger render={<Button variant="outline" size="icon" />}>
+            <TooltipTrigger render={<Button variant="secondary" size="icon" />}>
               <i className="ri-search-line" style={{ fontSize: "16px" }} />
             </TooltipTrigger>
             <TooltipContent>Search documentation</TooltipContent>
           </Tooltip>
           <Tooltip>
-            <TooltipTrigger render={<Button variant="outline" size="icon" />}>
+            <TooltipTrigger render={<Button variant="secondary" size="icon" />}>
               <i className="ri-notification-line" style={{ fontSize: "16px" }} />
             </TooltipTrigger>
             <TooltipContent>View notifications</TooltipContent>
           </Tooltip>
           <Tooltip>
-            <TooltipTrigger render={<Button variant="outline" size="icon" />}>
+            <TooltipTrigger render={<Button variant="secondary" size="icon" />}>
               <i className="ri-settings-line" style={{ fontSize: "16px" }} />
             </TooltipTrigger>
             <TooltipContent>Settings</TooltipContent>
@@ -696,7 +697,7 @@ export function Playground() {
       <Section title="Sonner (Toast)">
         <div className="flex flex-wrap gap-3">
           <Button
-            variant="outline"
+            variant="secondary"
             onClick={() =>
               toast.success("Deployment complete", {
                 description: "H100 cluster in US-West is now serving traffic.",
@@ -706,7 +707,7 @@ export function Playground() {
             Success Toast
           </Button>
           <Button
-            variant="outline"
+            variant="secondary"
             onClick={() =>
               toast.error("Deployment failed", {
                 description: "Could not reach the US-East availability zone.",
@@ -716,7 +717,7 @@ export function Playground() {
             Error Toast
           </Button>
           <Button
-            variant="outline"
+            variant="secondary"
             onClick={() =>
               toast.info("Maintenance window", {
                 description: "Scheduled downtime starts in 30 minutes.",

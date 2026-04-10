@@ -43,6 +43,12 @@
     --color-success-foreground: var(--success-foreground);
     --color-warn: var(--warn);
     --color-warn-foreground: var(--warn-foreground);
+    --color-destructive-solid:            var(--destructive-solid);
+    --color-destructive-solid-foreground: var(--destructive-solid-foreground);
+    --color-warn-solid:                   var(--warn-solid);
+    --color-warn-solid-foreground:        var(--warn-solid-foreground);
+    --color-success-solid:                var(--success-solid);
+    --color-success-solid-foreground:     var(--success-solid-foreground);
     --color-accent-foreground: var(--accent-foreground);
     --color-accent: var(--accent);
     --color-muted-foreground: var(--muted-foreground);
@@ -242,6 +248,14 @@
     --warn-foreground:        var(--yellow-800);
     --success:                var(--nvidia-green-200);
     --success-foreground:     var(--nvidia-green-800);
+
+    /* Solid fill — full-strength backgrounds for high-emphasis badges and dots */
+    --destructive-solid:            var(--red-600);
+    --destructive-solid-foreground: var(--white);
+    --warn-solid:                   var(--yellow-500);
+    --warn-solid-foreground:        var(--neutral-950);
+    --success-solid:                var(--nvidia-green-600);
+    --success-solid-foreground:     var(--white);
 
     /* Borders & input */
     --border: var(--neutral-200);

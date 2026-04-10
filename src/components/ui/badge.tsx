@@ -12,22 +12,30 @@ const badgeVariants = cva(
         default: "bg-primary text-primary-foreground [a]:hover:bg-primary/80",
         secondary:
           "bg-secondary text-secondary-foreground [a]:hover:bg-secondary/80",
-        destructive:
-          "bg-destructive/10 text-destructive focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:focus-visible:ring-destructive/40 [a]:hover:bg-destructive/20",
         outline:
           "border-border text-foreground [a]:hover:bg-muted [a]:hover:text-muted-foreground",
         ghost:
           "hover:bg-muted hover:text-muted-foreground dark:hover:bg-muted/50",
         link: "text-primary underline-offset-4 hover:underline",
         // Status text badges — uses Figma semantic tokens
+        critical:
+          "bg-destructive text-destructive-foreground",
         success:
           "bg-success text-success-foreground",
         warning:
           "bg-warn text-warn-foreground",
-        critical:
-          "bg-destructive text-destructive-foreground",
-        // Dot badge — pure color circle, no text
-        dot: "h-3 w-3 rounded-full border-0 px-0 py-0",
+        // Solid fill variants — high-emphasis, full-strength color
+        "success-solid":
+          "bg-success-solid text-success-solid-foreground",
+        "warning-solid":
+          "bg-warn-solid text-warn-solid-foreground",
+        "critical-solid":
+          "bg-destructive-solid text-destructive-solid-foreground",
+        // Dot badges — pure color circles, no text
+        dot: "h-3 w-3 rounded-full border-0 px-0 py-0 bg-muted-foreground",
+        "dot-success":  "h-3 w-3 rounded-full border-0 px-0 py-0 bg-success-solid",
+        "dot-warning":  "h-3 w-3 rounded-full border-0 px-0 py-0 bg-warn-solid",
+        "dot-critical": "h-3 w-3 rounded-full border-0 px-0 py-0 bg-destructive-solid",
       },
     },
     defaultVariants: {
