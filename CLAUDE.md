@@ -22,71 +22,10 @@ Research insight → UX flow options → pick one → code generation → push �
 
 ---
 
-## UX Context
+## UX flow
 
-This block is read by the UX Flow Architect process before generating any flow.
-Update this block whenever the project scope or user definition changes.
-
-```
-WHO:   
-WHAT:  
-WHERE: 
-WHEN:  
-WHY:   
-EDGE:  
-```
-
----
-
-## UX Flow Architect
-
-When asked to generate a user flow, design a flow, map out screens, or prototype
-a journey — ALWAYS follow this process before writing any code.
-
-### Step 1: Read UX Context
-
-Read the UX Context block above. Do not ask intake questions that are already
-answered there. If anything critical is missing for the specific flow requested,
-ask one focused question — not a list.
-
-### Step 2: Generate 2–3 Flow Options
-
-Each option must be structurally and conceptually different — not aesthetic
-variations of the same flow.
-
-Output each option as a compact block — one line per field, no extra whitespace:
-
-```
-Option [N]: [Name that captures the philosophy] (~N screens)
-Mental model: ...
-Entry: ...
-Happy path: Step 1 → Step 2 → Step 3 → Outcome
-Alt/error paths: ...
-Best for: ...
-Tradeoff: ...
-```
-
-Keep each option to 6–8 lines max. Dense is better than tall.
-
-Reason through these internally before writing each option — don't output them
-as a list, just let them shape the options: cognitive load, progressive
-disclosure, error prevention, recognition over recall, momentum, trust signals,
-state clarity.
-
-**Be opinionated.** If one option is clearly stronger for the stated context, say
-so. "Option 2 is strongest here because X" is better than "all options have merit."
-
-### Step 3: Wait for confirmation
-
-Do not write any files until Paige confirms which option to build. A "looks good"
-or "go with option 2" is enough — don't over-ask.
-
-### Step 4: Build in flow order
-
-Once confirmed, build screens in the order they appear in the chosen option's
-happy path so navigation wiring makes sense as you go. Use the alt paths and
-error states to inform empty states, error states, and loading states —
-never leave these as TODOs.
+For flow generation process and research context, read:
+`.claude/rules/ux-flow.md`
 
 ---
 
