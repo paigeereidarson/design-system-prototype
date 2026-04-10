@@ -1,25 +1,21 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import { Agentation } from "agentation"
-import { Dashboard } from "@/pages/dashboard"
-import { DocFeedbackTriage } from "@/pages/DocFeedbackTriage"
-import { DocsHealthDashboard } from "@/pages/DocsHealthDashboard"
-import { ProductDetail } from "@/pages/ProductDetail"
-import { InsightDetail } from "@/pages/InsightDetail"
-import { CreateIssue } from "@/pages/CreateIssue"
-import { Playground } from "@/pages/Playground"
+import { TooltipProvider } from "@/components/ui/tooltip"
+import { Toaster } from "@/components/ui/sonner"
+import { AppLayout } from "@/components/layout/AppLayout"
+import { Home } from "@/pages/Home"
 
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<DocsHealthDashboard />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/doc-feedback" element={<DocFeedbackTriage />} />
-        <Route path="/product/:slug" element={<ProductDetail />} />
-        <Route path="/product/:slug/insight/:insightId" element={<InsightDetail />} />
-        <Route path="/create-issue" element={<CreateIssue />} />
-        <Route path="/playground" element={<Playground />} />
-      </Routes>
+      <TooltipProvider>
+        <Routes>
+          <Route element={<AppLayout />}>
+            <Route path="/" element={<Home />} />
+          </Route>
+        </Routes>
+        <Toaster />
+      </TooltipProvider>
       {import.meta.env.DEV && <Agentation endpoint="/agentation" />}
     </BrowserRouter>
   )
