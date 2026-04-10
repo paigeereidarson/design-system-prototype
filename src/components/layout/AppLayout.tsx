@@ -9,9 +9,7 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
   SidebarInset,
-  SidebarTrigger,
 } from "@/components/ui/sidebar"
-import { Separator } from "@/components/ui/separator"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import nvidiaLogo from "@/assets/nvidia-logo-horz.png"
 
@@ -31,8 +29,8 @@ export function AppLayout() {
     <SidebarProvider>
       <Sidebar>
         {/* Logo */}
-        <SidebarHeader className="border-b border-sidebar-border px-4 py-1">
-          <img src={nvidiaLogo} alt="NVIDIA" className="h-16 w-auto" />
+        <SidebarHeader className="border-b border-sidebar-border px-4 py-1 !block">
+          <img src={nvidiaLogo} alt="NVIDIA" style={{ height: '48px', width: 'auto' }} />
         </SidebarHeader>
 
         {/* Navigation */}
@@ -44,14 +42,11 @@ export function AppLayout() {
                   ? location.pathname === "/"
                   : location.pathname.startsWith(item.href)
                 : false
-              const isDisabled = !item.href
-
               return (
                 <SidebarMenuItem key={item.label}>
                   <SidebarMenuButton
                     isActive={isActive}
                     onClick={() => item.href && navigate(item.href)}
-                    className={isDisabled ? "opacity-40 cursor-not-allowed" : ""}
                   >
                     <i
                       className={`${item.icon} text-sidebar-foreground`}
@@ -71,35 +66,19 @@ export function AppLayout() {
             <Avatar>
               <AvatarFallback>PR</AvatarFallback>
             </Avatar>
-            <div className="flex flex-col">
-              <span className="text-xs font-medium text-sidebar-foreground">
-                Paige Reidarson
-              </span>
-              <span className="text-xs text-muted-foreground">
-                Product Design
-              </span>
-            </div>
+            <span className="text-xs font-medium text-sidebar-foreground">
+              Paige Reidarson
+            </span>
           </div>
         </SidebarFooter>
       </Sidebar>
 
       <SidebarInset>
         {/* Top bar */}
-        <header className="flex items-center gap-3 border-b border-border px-4 py-3 md:px-6 shrink-0">
-          <SidebarTrigger />
-          <Separator orientation="vertical" className="h-4" />
-          <div className="flex flex-1 items-center justify-between">
-            <h1 className="text-sm font-semibold text-foreground">
-              Documentation Insights
-            </h1>
-            <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              <i
-                className="ri-time-line"
-                style={{ fontSize: "12px" }}
-              />
-              <span>Last sync: 2 min ago</span>
-            </div>
-          </div>
+        <header className="flex h-12 items-center border-b border-border px-4 md:px-6 shrink-0">
+          <h1 className="text-sm font-semibold text-foreground">
+            Documentation Insights
+          </h1>
         </header>
 
         {/* Page content */}
