@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { toast } from 'sonner'
+import { AppShell } from '@/components/custom/app-shell'
 import {
   BarChart3Icon,
   LineChartIcon,
@@ -177,23 +178,17 @@ export function Playground() {
     setStatusFilters(prev => ({ ...prev, [key]: !prev[key] }))
 
   return (
-    <div className="min-h-screen bg-background">
+    <AppShell
+      topBar={
+        <div className="flex flex-1 items-center gap-3">
+          <h1 className="text-base font-semibold">Component Playground</h1>
+          <span className="text-xs text-muted-foreground">Design system QA</span>
+        </div>
+      }
+    >
       <Toaster />
 
-      {/* Header */}
-      <div className="border-b border-border bg-card px-8 py-8">
-        <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-1">
-          Design system
-        </p>
-        <h1 className="text-[24px] font-semibold leading-[29px] text-foreground">
-          Component playground
-        </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Visual QA for newly installed SHADCN components. All styles use design system tokens.
-        </p>
-      </div>
-
-      <div className="mx-auto max-w-5xl space-y-12 px-8 py-12">
+      <div className="space-y-12">
 
         {/* ── 1. Navigation Menu ───────────────────────────────────────────── */}
         <Section eyebrow="Navigation menu">
@@ -716,6 +711,6 @@ export function Playground() {
         </Section>
 
       </div>
-    </div>
+    </AppShell>
   )
 }

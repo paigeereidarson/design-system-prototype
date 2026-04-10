@@ -2,6 +2,7 @@ import { Link, useNavigate, useParams } from "react-router-dom"
 import { ArrowLeft, Clock, RefreshCw, ExternalLink } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { InsightRow, type InsightData } from "@/components/custom/insight-row"
+import { AppShell } from "@/components/custom/app-shell"
 
 interface MetricData {
   label: string
@@ -211,33 +212,30 @@ export function ProductDetail() {
   const warningCount = insights.filter((i) => i.severity === "warning").length
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-10">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-14">
-            <div className="flex items-center gap-3">
-              <Link
-                to="/"
-                className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <ArrowLeft className="h-3.5 w-3.5" />
-                <span>All Products</span>
-              </Link>
-              <span className="text-muted-foreground/50">/</span>
-              <span className="text-sm font-medium text-foreground">{productData.name}</span>
-            </div>
-            <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              <Clock className="h-3 w-3" />
-              <span>Updated {formatDate(productData.lastUpdated)}</span>
-              <button className="ml-2 p-1.5 hover:bg-secondary rounded transition-colors">
-                <RefreshCw className="h-3.5 w-3.5" />
-              </button>
-            </div>
+    <AppShell
+      topBar={
+        <div className="flex flex-1 items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Link
+              to="/"
+              className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <ArrowLeft className="h-3.5 w-3.5" />
+              <span>All Products</span>
+            </Link>
+            <span className="text-muted-foreground/50">/</span>
+            <span className="text-sm font-medium text-foreground">{productData.name}</span>
+          </div>
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <Clock className="h-3 w-3" />
+            <span>Updated {formatDate(productData.lastUpdated)}</span>
+            <button className="ml-2 p-1.5 hover:bg-secondary rounded transition-colors">
+              <RefreshCw className="h-3.5 w-3.5" />
+            </button>
           </div>
         </div>
-      </header>
-
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      }
+    >
         <div className="flex items-start justify-between gap-6 mb-8">
           <div className="flex-1">
             <div className="flex items-center gap-4 mb-2">
@@ -335,7 +333,6 @@ export function ProductDetail() {
             </button>
           </div>
         </section>
-      </main>
-    </div>
+    </AppShell>
   )
 }

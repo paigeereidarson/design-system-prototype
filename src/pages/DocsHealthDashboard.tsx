@@ -1,9 +1,8 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { Search, LayoutGrid, List, RefreshCw, Clock, AlertTriangle, AlertOctagon, type LucideIcon } from "lucide-react"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
+import { LayoutGrid, List, RefreshCw, Clock, AlertTriangle, AlertOctagon, type LucideIcon } from "lucide-react"
 import { ProductCard, type ProductData } from "@/components/custom/product-card"
+import { AppShell } from "@/components/custom/app-shell"
 import { cn } from "@/lib/utils"
 
 const mockProducts: ProductData[] = [
@@ -102,12 +101,6 @@ const mockProducts: ProductData[] = [
   },
 ]
 
-const statusDot = {
-  healthy: "bg-success-foreground",
-  warning: "bg-warn-foreground",
-  critical: "bg-destructive-foreground",
-}
-
 interface SummaryCardProps {
   label: string
   value: string | number
@@ -155,9 +148,7 @@ function SummaryCard({ label, value, subtext, status, icon: Icon }: SummaryCardP
 
 export function DocsHealthDashboard() {
   const navigate = useNavigate()
-  const [searchQuery, setSearchQuery] = useState("")
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
-  const [selectedId, setSelectedId] = useState<string | null>(null)
 
   const criticalCount = mockProducts.filter((p) => p.status === "critical").length
   const warningCount = mockProducts.filter((p) => p.status === "warning").length
@@ -166,96 +157,34 @@ export function DocsHealthDashboard() {
     mockProducts.reduce((sum, p) => sum + p.healthScore, 0) / mockProducts.length
   )
 
-  const sortedAll = [...mockProducts].sort((a, b) => {
+  const displayed = [...mockProducts].sort((a, b) => {
     const order = { critical: 0, warning: 1, healthy: 2 }
     return order[a.status] - order[b.status]
   })
 
-  const filteredProducts = sortedAll.filter(
-    (p) =>
-      p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.description.toLowerCase().includes(searchQuery.toLowerCase())
-  )
-
-  const displayed = selectedId
-    ? filteredProducts.filter((p) => p.id === selectedId)
-    : filteredProducts
-
   return (
-    <div className="h-screen flex bg-background overflow-hidden">
-
-      {/* Left sidebar — full height */}
-      <nav className="w-56 shrink-0 border-r border-border bg-card flex flex-col overflow-hidden">
-          {/* Search */}
-          <div className="p-3 border-b border-border">
-            <div className="relative">
-              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-              <Input
-                type="text"
-                placeholder="Search products..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-8 h-8 text-xs"
-              />
-            </div>
+    <AppShell
+      topBar={
+        <div className="flex flex-1 items-center justify-between">
+          <div className="flex items-center gap-3">
+            <h1 className="text-sm font-semibold text-foreground">Documentation Health</h1>
+            <span className="text-xs text-muted-foreground font-mono bg-secondary px-2 py-0.5 rounded">
+              v2.4.1
+            </span>
           </div>
-
-          {/* Product list */}
-          <div className="flex-1 overflow-y-auto py-1">
-            <div className="px-3 py-2 text-[10px] font-medium text-muted-foreground uppercase tracking-wide">
-              Products
-            </div>
-            {filteredProducts.map((product) => (
-              <button
-                key={product.id}
-                onClick={() => setSelectedId(selectedId === product.id ? null : product.id)}
-                className={cn(
-                  "w-full text-left flex items-center gap-2.5 px-3 py-2 transition-colors",
-                  selectedId === product.id
-                    ? "bg-accent/10 text-foreground"
-                    : "text-muted-foreground hover:bg-secondary hover:text-foreground"
-                )}
-              >
-                <Badge variant="dot" className={statusDot[product.status]} />
-                <span className="flex-1 text-xs truncate">{product.name}</span>
-                <span className="text-xs font-mono tabular-nums text-muted-foreground">
-                  {product.healthScore}
-                </span>
-              </button>
-            ))}
-
-            {filteredProducts.length === 0 && (
-              <p className="px-3 py-4 text-xs text-muted-foreground">No products found.</p>
-            )}
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <Clock className="h-3 w-3" />
+            <span>Last sync: 2 min ago</span>
+            <button className="ml-2 p-1.5 hover:bg-secondary rounded transition-colors">
+              <RefreshCw className="h-3.5 w-3.5" />
+            </button>
           </div>
-        </nav>
-
-      {/* Right column: header + main */}
-      <div className="flex flex-1 flex-col overflow-hidden">
-
-        {/* Header — only spans content area */}
-        <header className="border-b border-border bg-card/50 backdrop-blur-sm shrink-0">
-          <div className="flex items-center justify-between h-14 px-6">
-            <div className="flex items-center gap-3">
-              <h1 className="text-sm font-semibold text-foreground">Documentation Health</h1>
-              <span className="text-xs text-muted-foreground font-mono bg-secondary px-2 py-0.5 rounded">
-                v2.4.1
-              </span>
-            </div>
-            <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              <Clock className="h-3 w-3" />
-              <span>Last sync: 2 min ago</span>
-              <button className="ml-2 p-1.5 hover:bg-secondary rounded transition-colors">
-                <RefreshCw className="h-3.5 w-3.5" />
-              </button>
-            </div>
-          </div>
-        </header>
-
-        {/* Main content */}
-        <main className="flex-1 overflow-y-auto">
-          <div className="p-6">
-            {/* Summary stats */}
+        </div>
+      }
+    >
+      <div className="flex flex-col gap-6">
+          {/* Summary stats */}
+          <section aria-label="Summary statistics">
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-6">
               <SummaryCard label="Products" value={mockProducts.length} subtext="monitored" />
               <SummaryCard label="Total Pages" value={totalPages} />
@@ -277,39 +206,39 @@ export function DocsHealthDashboard() {
                 icon={warningCount > 0 ? AlertTriangle : undefined}
               />
             </div>
+          </section>
 
-            {/* Toolbar */}
-            <div className="flex items-center justify-between mb-4">
-              <p className="text-xs text-muted-foreground">
-                {selectedId
-                  ? `Showing 1 of ${mockProducts.length} products`
-                  : `${filteredProducts.length} products`}
-              </p>
-              <div className="flex items-center border border-border rounded-md overflow-hidden">
-                <button
-                  onClick={() => setViewMode("grid")}
-                  className={`p-1.5 transition-colors ${
-                    viewMode === "grid"
-                      ? "bg-secondary text-foreground"
-                      : "text-muted-foreground hover:bg-secondary/50"
-                  }`}
-                >
-                  <LayoutGrid className="h-4 w-4" />
-                </button>
-                <button
-                  onClick={() => setViewMode("list")}
-                  className={`p-1.5 transition-colors ${
-                    viewMode === "list"
-                      ? "bg-secondary text-foreground"
-                      : "text-muted-foreground hover:bg-secondary/50"
-                  }`}
-                >
-                  <List className="h-4 w-4" />
-                </button>
-              </div>
+          {/* Toolbar */}
+          <div className="flex items-center justify-between mb-4">
+            <p className="text-xs text-muted-foreground">
+              {displayed.length} products
+            </p>
+            <div className="flex items-center border border-border rounded-md overflow-hidden">
+              <button
+                onClick={() => setViewMode("grid")}
+                className={`p-1.5 transition-colors ${
+                  viewMode === "grid"
+                    ? "bg-secondary text-foreground"
+                    : "text-muted-foreground hover:bg-secondary/50"
+                }`}
+              >
+                <LayoutGrid className="h-4 w-4" />
+              </button>
+              <button
+                onClick={() => setViewMode("list")}
+                className={`p-1.5 transition-colors ${
+                  viewMode === "list"
+                    ? "bg-secondary text-foreground"
+                    : "text-muted-foreground hover:bg-secondary/50"
+                }`}
+              >
+                <List className="h-4 w-4" />
+              </button>
             </div>
+          </div>
 
-            {/* Product grid */}
+          {/* Product grid */}
+          <section aria-label="Product list">
             <div
               className={
                 viewMode === "grid"
@@ -327,10 +256,8 @@ export function DocsHealthDashboard() {
                 />
               ))}
             </div>
-          </div>
-        </main>
+          </section>
       </div>
-    </div>
+    </AppShell>
   )
-
 }

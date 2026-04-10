@@ -14,6 +14,7 @@ import {
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+import { AppShell } from "@/components/custom/app-shell"
 
 const insightData = {
   id: "1",
@@ -102,30 +103,27 @@ export function InsightDetail() {
   const contributingSources = insightData.dataSources.filter((ds) => ds.status === "contributing").length
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-10">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-14">
-            <div className="flex items-center gap-3">
-              <Link
-                to={`/product/${slug}`}
-                className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <ArrowLeft className="h-3.5 w-3.5" />
-                <span>Platform API</span>
-              </Link>
-              <span className="text-muted-foreground/50">/</span>
-              <span className="text-sm text-muted-foreground">Insight</span>
-            </div>
-            <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              <Clock className="h-3 w-3" />
-              <span>Detected {formatDate(insightData.detectedAt)}</span>
-            </div>
+    <AppShell
+      topBar={
+        <div className="flex flex-1 items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Link
+              to={`/product/${slug}`}
+              className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <ArrowLeft className="h-3.5 w-3.5" />
+              <span>Platform API</span>
+            </Link>
+            <span className="text-muted-foreground/50">/</span>
+            <span className="text-sm text-muted-foreground">Insight</span>
+          </div>
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <Clock className="h-3 w-3" />
+            <span>Detected {formatDate(insightData.detectedAt)}</span>
           </div>
         </div>
-      </header>
-
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      }
+    >
         <div className="mb-8">
           <div className="flex items-start gap-3 mb-4">
             {insightData.isUrgent && (
@@ -310,8 +308,6 @@ export function InsightDetail() {
             ))}
           </div>
         </section>
-
-      </main>
-    </div>
+    </AppShell>
   )
 }
