@@ -1,3 +1,4 @@
+import { useRef, useEffect } from "react"
 import { Outlet, useNavigate, useLocation } from "react-router-dom"
 import {
   Sidebar,
@@ -25,6 +26,11 @@ const navItems = [
 export function AppLayout() {
   const navigate = useNavigate()
   const location = useLocation()
+  const scrollRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    scrollRef.current?.scrollTo(0, 0)
+  }, [location.pathname])
 
   return (
     <SidebarProvider>
@@ -83,7 +89,7 @@ export function AppLayout() {
         </header>
 
         {/* Page content */}
-        <div className="flex-1 overflow-y-auto">
+        <div ref={scrollRef} className="flex-1 overflow-y-auto">
           <div className="max-w-7xl px-4 py-6 md:px-6">
             <Outlet />
           </div>
