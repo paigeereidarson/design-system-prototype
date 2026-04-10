@@ -29,7 +29,10 @@ export function AppLayout() {
   const scrollRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    scrollRef.current?.scrollTo(0, 0)
+    requestAnimationFrame(() => {
+      scrollRef.current?.scrollTo(0, 0)
+      window.scrollTo(0, 0)
+    })
   }, [location.pathname])
 
   return (
@@ -80,7 +83,7 @@ export function AppLayout() {
         </SidebarFooter>
       </Sidebar>
 
-      <SidebarInset>
+      <SidebarInset className="h-screen overflow-hidden">
         {/* Top bar */}
         <header className="flex items-center border-b border-border px-4 py-1 md:px-6 shrink-0" style={{ height: '57px' }}>
           <h1 className="text-sm font-semibold text-foreground">
