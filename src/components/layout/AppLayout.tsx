@@ -75,7 +75,7 @@ export function AppLayout() {
 
       <SidebarInset>
         {/* Top bar */}
-        <header className="flex h-12 items-center border-b border-border px-4 md:px-6 shrink-0">
+        <header className="flex items-center border-b border-border px-4 py-1 md:px-6 shrink-0" style={{ height: '57px' }}>
           <h1 className="text-sm font-semibold text-foreground">
             Documentation Insights
           </h1>
@@ -83,7 +83,7 @@ export function AppLayout() {
 
         {/* Page content */}
         <div className="flex-1 overflow-y-auto">
-          <div className="mx-auto max-w-7xl px-4 py-6 md:px-6">
+          <div className="max-w-7xl px-4 py-6 md:px-6">
             <Outlet />
           </div>
         </div>
