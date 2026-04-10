@@ -19,6 +19,7 @@ const navItems = [
   { label: "Doc Triage", icon: "ri-file-list-line", href: "/doc-feedback" },
   { label: "Analytics", icon: "ri-bar-chart-line", href: null },
   { label: "Settings", icon: "ri-settings-line", href: null },
+  { label: "Playground", icon: "ri-swatch-line", href: "/playground" },
 ]
 
 export function AppLayout() {
