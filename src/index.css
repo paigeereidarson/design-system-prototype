@@ -273,7 +273,7 @@
     --radius: var(--radius-base);
 
     /* Sidebar */
-    --sidebar:                    var(--neutral-50);
+    --sidebar:                    var(--neutral-100);
     --sidebar-foreground:         var(--neutral-950);
     --sidebar-primary:            var(--neutral-900);
     --sidebar-primary-foreground: var(--neutral-50);
@@ -303,7 +303,3 @@
   }
 }
 
-/* NVIDIA-light: tabs active underline uses primary (NVIDIA green) */
-.nvidia-light [data-slot="tabs-trigger"][data-active]::after {
-  background-color: var(--color-primary);
-}

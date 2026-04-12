@@ -39,7 +39,7 @@ export function AppLayout() {
     <SidebarProvider>
       <Sidebar>
         {/* Logo */}
-        <SidebarHeader className="border-b border-sidebar-border px-4 py-1 !block">
+        <SidebarHeader className="px-4 py-1 !block">
           <img src={nvidiaLogo} alt="NVIDIA" style={{ height: '48px', width: 'auto' }} />
         </SidebarHeader>
 
@@ -71,7 +71,7 @@ export function AppLayout() {
         </SidebarContent>
 
         {/* User */}
-        <SidebarFooter className="border-t border-sidebar-border p-3">
+        <SidebarFooter className="p-3">
           <div className="flex items-center gap-2">
             <Avatar>
               <AvatarFallback>PR</AvatarFallback>
@@ -84,17 +84,13 @@ export function AppLayout() {
       </Sidebar>
 
       <SidebarInset className="h-screen overflow-hidden">
-        {/* Top bar */}
-        <header className="flex items-center border-b border-border px-4 py-1 md:px-6 shrink-0" style={{ height: '57px' }}>
-          <h1 className="text-sm font-semibold text-foreground">
-            Documentation Insights
-          </h1>
-        </header>
-
-        {/* Page content */}
-        <div ref={scrollRef} className="flex-1 overflow-y-auto">
-          <div className="max-w-7xl px-4 py-6 md:px-6">
-            <Outlet />
+        {/* Level 0 — gray canvas (fixed) */}
+        <div className="flex-1 flex flex-col bg-muted p-2 overflow-hidden">
+          {/* Level 1 — white content card (fixed frame, content scrolls inside) */}
+          <div className="flex-1 flex flex-col bg-background border border-border rounded-xl overflow-hidden">
+            <div ref={scrollRef} className="flex-1 overflow-y-auto p-6">
+              <Outlet />
+            </div>
           </div>
         </div>
       </SidebarInset>

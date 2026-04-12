@@ -56,7 +56,7 @@ import {
   PopoverTrigger,
   PopoverContent,
 } from "@/components/ui/popover"
-import { Progress } from "@/components/ui/progress"
+import { Progress, ProgressLabel, ProgressValue } from "@/components/ui/progress"
 import {
   ResizablePanel,
   ResizablePanelGroup,
@@ -130,7 +130,10 @@ export function Playground() {
         <div className="flex flex-wrap items-center gap-3">
           <Button>Default</Button>
           <Button variant="secondary">Secondary</Button>
-          <Button variant="ghost">Ghost</Button>
+          <Button variant="ghost">
+            Ghost
+            <i className="ri-arrow-right-line" style={{ fontSize: '14px', color: 'var(--primary)' }} />
+          </Button>
           <Button variant="link">Link</Button>
           <Button disabled>Disabled</Button>
           <Button size="icon">
@@ -145,8 +148,7 @@ export function Playground() {
       <Section title="Badge">
         <div className="flex flex-wrap items-center gap-3">
           <Badge>Default</Badge>
-          <Badge variant="secondary">Secondary</Badge>
-          <Badge variant="secondary">Outline</Badge>
+          <Badge variant="outline">Outline</Badge>
           <Badge variant="success">Success</Badge>
           <Badge variant="warning">Warning</Badge>
           <Badge variant="critical">Critical</Badge>
@@ -245,7 +247,7 @@ export function Playground() {
             <CardContent>
               <div className="flex items-center gap-2">
                 <Badge variant="critical">Critical</Badge>
-                <span className="text-xs text-muted-foreground">Health: 42</span>
+                <span className="text-xs text-foreground">Health: 42</span>
               </div>
             </CardContent>
             <CardFooter>
@@ -260,7 +262,7 @@ export function Playground() {
             <CardContent>
               <div className="flex items-center gap-2">
                 <Badge variant="warning">Warning</Badge>
-                <span className="text-xs text-muted-foreground">Health: 67</span>
+                <span className="text-xs text-foreground">Health: 67</span>
               </div>
             </CardContent>
             <CardFooter>
@@ -275,7 +277,7 @@ export function Playground() {
             <CardContent>
               <div className="flex items-center gap-2">
                 <Badge variant="success">Healthy</Badge>
-                <span className="text-xs text-muted-foreground">Health: 94</span>
+                <span className="text-xs text-foreground">Health: 94</span>
               </div>
             </CardContent>
             <CardFooter>
@@ -303,16 +305,6 @@ export function Playground() {
           </TabsContent>
           <TabsContent value="settings" className="mt-3">
             <p className="text-sm text-muted-foreground">Configuration panel goes here.</p>
-          </TabsContent>
-        </Tabs>
-        <Tabs defaultValue="overview">
-          <TabsList variant="line">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="insights">Insights</TabsTrigger>
-            <TabsTrigger value="settings">Settings</TabsTrigger>
-          </TabsList>
-          <TabsContent value="overview" className="mt-3">
-            <p className="text-sm text-muted-foreground">Line variant tabs.</p>
           </TabsContent>
         </Tabs>
       </Section>
@@ -406,12 +398,11 @@ export function Playground() {
 
       {/* ── Progress ────────────────────────────────── */}
       <Section title="Progress">
-        <div className="max-w-sm flex flex-col gap-2">
-          <div className="flex items-center justify-between text-xs">
-            <span className="text-muted-foreground">Confidence</span>
-            <span className="font-mono text-foreground">{progress}%</span>
-          </div>
-          <Progress value={progress} />
+        <div className="max-w-sm">
+          <Progress value={progress}>
+            <ProgressLabel className="text-xs text-muted-foreground">Confidence</ProgressLabel>
+            <ProgressValue className="text-xs text-foreground" />
+          </Progress>
         </div>
       </Section>
 
