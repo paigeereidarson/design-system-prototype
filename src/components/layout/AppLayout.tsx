@@ -90,7 +90,7 @@ export function AppLayout() {
 
       <SidebarInset className="h-screen overflow-hidden">
         {/* Top bar */}
-        <header className="flex items-center justify-end gap-3 px-4 shrink-0 bg-muted" style={{ paddingTop: 14, paddingBottom: 14 }}>
+        <header className="flex items-center justify-end gap-3 px-4 shrink-0 bg-muted" style={{ paddingTop: 15, paddingBottom: 13 }}>
           <Button
             variant="secondary"
             size="icon-xs"
@@ -119,7 +119,7 @@ export function AppLayout() {
         </header>
 
         {/* Level 0 — gray canvas (fixed) */}
-        <div className="flex-1 flex flex-col bg-muted pt-2 pr-2 pb-2 pl-3 overflow-hidden">
+        <div className="flex-1 flex flex-col bg-muted pr-2 pb-2 pl-3 overflow-hidden">
           {/* Level 1 — white content card (fixed frame, content scrolls inside) */}
           <div className="flex-1 flex flex-col bg-background border border-border rounded-xl overflow-hidden">
             <div ref={scrollRef} className="flex-1 overflow-y-auto p-4">

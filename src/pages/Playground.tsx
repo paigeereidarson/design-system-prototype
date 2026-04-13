@@ -242,42 +242,9 @@ export function Playground() {
       <Section title="Card">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {[
-            {
-              title: "Platform API",
-              description: "Core REST API documentation and reference guides",
-              health: 42,
-              strokeClass: "stroke-destructive-solid",
-              textClass: "text-destructive-solid",
-              pages: 156,
-              trend: { direction: "down" as const, value: 12 },
-              diagnostics: { hardToFind: 8, unuseful: 15, unappealing: 3 },
-              insight: "23 pages have stale content — negative feedback up 40% this week.",
-              action: "Review 8 pages flagged as hard to find",
-            },
-            {
-              title: "SDK Reference",
-              description: "Client libraries for JavaScript, Python, and Go",
-              health: 67,
-              strokeClass: "stroke-warn-solid",
-              textClass: "text-warn-solid",
-              pages: 89,
-              trend: { direction: "down" as const, value: 5 },
-              diagnostics: { hardToFind: 2, unuseful: 6, unappealing: 4 },
-              insight: "Python SDK examples failing validation across 8 pages.",
-              action: "Triage 6 unuseful pages with low scroll depth",
-            },
-            {
-              title: "Getting Started",
-              description: "Onboarding guides and quick start tutorials",
-              health: 94,
-              strokeClass: "stroke-success-solid",
-              textClass: "text-success-solid",
-              pages: 34,
-              trend: { direction: "up" as const, value: 3 },
-              diagnostics: { hardToFind: 0, unuseful: 1, unappealing: 0 },
-              insight: "All guides current with strong engagement and findability.",
-              action: "No action needed — monitor weekly",
-            },
+            { title: "Platform API", description: "Core REST API documentation and reference guides", health: 42, strokeClass: "stroke-destructive-solid", textClass: "text-destructive-solid", insight: "23 pages have stale content with high negative feedback rate." },
+            { title: "SDK Reference", description: "Client libraries for JavaScript, Python, and Go", health: 67, strokeClass: "stroke-warn-solid", textClass: "text-warn-solid", insight: "Python SDK examples failing validation across 8 pages." },
+            { title: "Getting Started", description: "Onboarding guides and quick start tutorials", health: 94, strokeClass: "stroke-success-solid", textClass: "text-success-solid", insight: "All guides current with strong user engagement metrics." },
           ].map((product) => (
             <Card key={product.title}>
               <CardContent>
@@ -297,38 +264,9 @@ export function Playground() {
                     <span className="text-xs text-muted-foreground mt-1">Health</span>
                   </div>
                 </div>
-                {/* Metrics row */}
-                <div className="flex items-center gap-4 mt-3 text-xs text-muted-foreground">
-                  <span>{product.pages} pages</span>
-                  <span className={product.trend.direction === "down" ? "text-destructive-solid" : "text-success-solid"}>
-                    <i className={product.trend.direction === "down" ? "ri-arrow-down-s-line" : "ri-arrow-up-s-line"} style={{ fontSize: "12px" }} />
-                    {product.trend.value}% 7d
-                  </span>
-                </div>
-                {/* Diagnostic categories */}
-                <div className="flex items-center gap-2 mt-2">
-                  {product.diagnostics.hardToFind > 0 && (
-                    <Badge variant="critical">{product.diagnostics.hardToFind} hard to find</Badge>
-                  )}
-                  {product.diagnostics.unuseful > 0 && (
-                    <Badge variant="warning">{product.diagnostics.unuseful} unuseful</Badge>
-                  )}
-                  {product.diagnostics.unappealing > 0 && (
-                    <Badge variant="outline">{product.diagnostics.unappealing} unappealing</Badge>
-                  )}
-                  {product.diagnostics.hardToFind === 0 && product.diagnostics.unuseful <= 1 && product.diagnostics.unappealing === 0 && (
-                    <Badge variant="success">All clear</Badge>
-                  )}
-                </div>
               </CardContent>
               <CardFooter>
-                <div className="flex flex-col gap-2 w-full">
-                  <p className="text-sm text-foreground">{product.insight}</p>
-                  <p className="text-xs text-muted-foreground flex items-center gap-1">
-                    <i className="ri-arrow-right-line" style={{ fontSize: "12px" }} />
-                    {product.action}
-                  </p>
-                </div>
+                <p className="text-sm text-foreground">{product.insight}</p>
               </CardFooter>
             </Card>
           ))}
