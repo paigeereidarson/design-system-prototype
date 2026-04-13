@@ -8,12 +8,18 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground [a]:hover:bg-primary/80",
+        default:
+          "bg-secondary text-foreground hover:bg-secondary-hover [&_i]:text-foreground aria-expanded:bg-secondary",
         secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/80 aria-expanded:bg-secondary aria-expanded:text-secondary-foreground",
-        ghost:
-          "hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:bg-muted/50",
-        link: "text-foreground underline underline-offset-4 hover:text-foreground/80",
+          "text-foreground [&_i]:text-foreground hover:bg-secondary hover:text-foreground hover:[&_i]:text-foreground aria-expanded:bg-secondary aria-expanded:text-foreground",
+        /**
+         * Critical — use for the primary action on a screen.
+         * There should only be one critical button per view.
+         * It uses the NVIDIA green brand color to draw maximum attention.
+         */
+        critical:
+          "bg-primary text-primary-foreground hover:bg-primary-hover",
+        link: "text-foreground underline underline-offset-4 hover:text-muted-foreground",
       },
       size: {
         default:

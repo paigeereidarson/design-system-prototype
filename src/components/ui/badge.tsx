@@ -1,5 +1,3 @@
-import { mergeProps } from "@base-ui/react/merge-props"
-import { useRender } from "@base-ui/react/use-render"
 import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
@@ -9,11 +7,15 @@ const badgeVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-neutral-200 text-neutral-950",
+        default: "bg-secondary text-foreground",
         outline:
-          "bg-white border-neutral-200 text-foreground",
+          "bg-transparent border-secondary text-foreground",
+        "default-menu":
+          "bg-secondary text-foreground pr-1.5 cursor-pointer hover:bg-secondary-hover",
+        "outline-menu":
+          "bg-transparent border-secondary text-foreground pr-1.5 cursor-pointer hover:bg-muted",
         ghost:
-          "hover:bg-muted hover:text-muted-foreground dark:hover:bg-muted/50",
+          "hover:bg-muted hover:text-muted-foreground",
         link: "text-primary underline-offset-4 hover:underline",
         // Status text badges — uses Figma semantic tokens
         critical:
@@ -42,26 +44,40 @@ const badgeVariants = cva(
   }
 )
 
+const menuIcon = (
+  <i
+    className="ri-arrow-drop-down-fill text-muted-foreground"
+    style={{ fontSize: "10px" }}
+  />
+)
+
 function Badge({
   className,
   variant = "default",
-  render,
+  children,
+  onContextMenu,
   ...props
-}: useRender.ComponentProps<"span"> & VariantProps<typeof badgeVariants>) {
-  return useRender({
-    defaultTagName: "span",
-    props: mergeProps<"span">(
-      {
-        className: cn(badgeVariants({ variant }), className),
-      },
-      props
-    ),
-    render,
-    state: {
-      slot: "badge",
-      variant,
-    },
-  })
+}: React.ComponentProps<"span"> &
+  VariantProps<typeof badgeVariants> & {
+    onContextMenu?: (e: React.MouseEvent) => void
+  }) {
+  const hasMenu = variant === "default-menu" || variant === "outline-menu"
+
+  const handleClick = hasMenu && onContextMenu
+    ? (e: React.MouseEvent) => { e.preventDefault(); onContextMenu(e) }
+    : undefined
+
+  return (
+    <span
+      data-slot="badge"
+      className={cn(badgeVariants({ variant }), className)}
+      onClick={handleClick}
+      {...props}
+    >
+      {children}
+      {hasMenu && menuIcon}
+    </span>
+  )
 }
 
 export { Badge, badgeVariants }

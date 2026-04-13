@@ -129,11 +129,11 @@ export function Playground() {
       <Section title="Button">
         <div className="flex flex-wrap items-center gap-3">
           <Button>Default</Button>
-          <Button variant="secondary">Secondary</Button>
-          <Button variant="ghost">
-            Ghost
-            <i className="ri-arrow-right-line" style={{ fontSize: '14px', color: 'var(--primary)' }} />
+          <Button variant="secondary">
+            Secondary
+            <i className="ri-arrow-right-line" style={{ fontSize: '14px' }} />
           </Button>
+          <Button variant="critical">Critical</Button>
           <Button variant="link">Link</Button>
           <Button disabled>Disabled</Button>
           <Button size="icon">
@@ -149,6 +149,8 @@ export function Playground() {
         <div className="flex flex-wrap items-center gap-3">
           <Badge>Default</Badge>
           <Badge variant="outline">Outline</Badge>
+          <Badge variant="default-menu">Default Menu</Badge>
+          <Badge variant="outline-menu">Outline Menu</Badge>
           <Badge variant="success">Success</Badge>
           <Badge variant="warning">Warning</Badge>
           <Badge variant="critical">Critical</Badge>
@@ -188,11 +190,11 @@ export function Playground() {
       {/* ── Input + Label + Textarea ────────────────── */}
       <Section title="Input / Label / Textarea">
         <div className="flex flex-col gap-4 max-w-sm">
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-1.5">
             <Label htmlFor="pg-name">Name</Label>
             <Input id="pg-name" placeholder="Enter product name..." />
           </div>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-1.5">
             <Label htmlFor="pg-desc">Description</Label>
             <Textarea id="pg-desc" placeholder="Describe the documentation issue..." />
           </div>
@@ -239,51 +241,97 @@ export function Playground() {
       {/* ── Card ────────────────────────────────────── */}
       <Section title="Card">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <Card>
-            <CardHeader>
-              <CardTitle>Platform API</CardTitle>
-              <CardDescription>Core REST API documentation</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center gap-2">
-                <Badge variant="critical">Critical</Badge>
-                <span className="text-xs text-foreground">Health: 42</span>
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button size="default" variant="secondary">View Details</Button>
-            </CardFooter>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle>SDK Reference</CardTitle>
-              <CardDescription>JavaScript, Python, and Go</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center gap-2">
-                <Badge variant="warning">Warning</Badge>
-                <span className="text-xs text-foreground">Health: 67</span>
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button size="default" variant="secondary">View Details</Button>
-            </CardFooter>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle>Getting Started</CardTitle>
-              <CardDescription>Onboarding guides and tutorials</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center gap-2">
-                <Badge variant="success">Healthy</Badge>
-                <span className="text-xs text-foreground">Health: 94</span>
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button size="default" variant="secondary">View Details</Button>
-            </CardFooter>
-          </Card>
+          {[
+            {
+              title: "Platform API",
+              description: "Core REST API documentation and reference guides",
+              health: 42,
+              strokeClass: "stroke-destructive-solid",
+              textClass: "text-destructive-solid",
+              pages: 156,
+              trend: { direction: "down" as const, value: 12 },
+              diagnostics: { hardToFind: 8, unuseful: 15, unappealing: 3 },
+              insight: "23 pages have stale content — negative feedback up 40% this week.",
+              action: "Review 8 pages flagged as hard to find",
+            },
+            {
+              title: "SDK Reference",
+              description: "Client libraries for JavaScript, Python, and Go",
+              health: 67,
+              strokeClass: "stroke-warn-solid",
+              textClass: "text-warn-solid",
+              pages: 89,
+              trend: { direction: "down" as const, value: 5 },
+              diagnostics: { hardToFind: 2, unuseful: 6, unappealing: 4 },
+              insight: "Python SDK examples failing validation across 8 pages.",
+              action: "Triage 6 unuseful pages with low scroll depth",
+            },
+            {
+              title: "Getting Started",
+              description: "Onboarding guides and quick start tutorials",
+              health: 94,
+              strokeClass: "stroke-success-solid",
+              textClass: "text-success-solid",
+              pages: 34,
+              trend: { direction: "up" as const, value: 3 },
+              diagnostics: { hardToFind: 0, unuseful: 1, unappealing: 0 },
+              insight: "All guides current with strong engagement and findability.",
+              action: "No action needed — monitor weekly",
+            },
+          ].map((product) => (
+            <Card key={product.title}>
+              <CardContent>
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex flex-col gap-1 flex-1">
+                    <CardTitle>{product.title}</CardTitle>
+                    <CardDescription>{product.description}</CardDescription>
+                  </div>
+                  <div className="flex flex-col items-center shrink-0">
+                    <div className="relative flex items-center justify-center" style={{ width: 56, height: 56 }}>
+                      <svg viewBox="0 0 36 36" className="w-full h-full -rotate-90">
+                        <circle cx="18" cy="18" r="15.5" fill="none" className="stroke-muted" strokeWidth="3" />
+                        <circle cx="18" cy="18" r="15.5" fill="none" className={product.strokeClass} strokeWidth="3" strokeDasharray={`${product.health * 0.9738} ${97.38 - product.health * 0.9738}`} strokeLinecap="round" />
+                      </svg>
+                      <span className={`absolute font-bold ${product.textClass}`} style={{ fontSize: 18 }}>{product.health}</span>
+                    </div>
+                    <span className="text-xs text-muted-foreground mt-1">Health</span>
+                  </div>
+                </div>
+                {/* Metrics row */}
+                <div className="flex items-center gap-4 mt-3 text-xs text-muted-foreground">
+                  <span>{product.pages} pages</span>
+                  <span className={product.trend.direction === "down" ? "text-destructive-solid" : "text-success-solid"}>
+                    <i className={product.trend.direction === "down" ? "ri-arrow-down-s-line" : "ri-arrow-up-s-line"} style={{ fontSize: "12px" }} />
+                    {product.trend.value}% 7d
+                  </span>
+                </div>
+                {/* Diagnostic categories */}
+                <div className="flex items-center gap-2 mt-2">
+                  {product.diagnostics.hardToFind > 0 && (
+                    <Badge variant="critical">{product.diagnostics.hardToFind} hard to find</Badge>
+                  )}
+                  {product.diagnostics.unuseful > 0 && (
+                    <Badge variant="warning">{product.diagnostics.unuseful} unuseful</Badge>
+                  )}
+                  {product.diagnostics.unappealing > 0 && (
+                    <Badge variant="outline">{product.diagnostics.unappealing} unappealing</Badge>
+                  )}
+                  {product.diagnostics.hardToFind === 0 && product.diagnostics.unuseful <= 1 && product.diagnostics.unappealing === 0 && (
+                    <Badge variant="success">All clear</Badge>
+                  )}
+                </div>
+              </CardContent>
+              <CardFooter>
+                <div className="flex flex-col gap-2 w-full">
+                  <p className="text-sm text-foreground">{product.insight}</p>
+                  <p className="text-xs text-muted-foreground flex items-center gap-1">
+                    <i className="ri-arrow-right-line" style={{ fontSize: "12px" }} />
+                    {product.action}
+                  </p>
+                </div>
+              </CardFooter>
+            </Card>
+          ))}
         </div>
       </Section>
 
@@ -411,7 +459,7 @@ export function Playground() {
       {/* ── Dialog ──────────────────────────────────── */}
       <Section title="Dialog">
         <Dialog>
-          <DialogTrigger render={<Button variant="secondary" />}>
+          <DialogTrigger render={<Button />}>
             Open Dialog
           </DialogTrigger>
           <DialogContent>
@@ -437,7 +485,7 @@ export function Playground() {
       {/* ── Sheet ───────────────────────────────────── */}
       <Section title="Sheet">
         <Sheet>
-          <SheetTrigger render={<Button variant="secondary" />}>
+          <SheetTrigger render={<Button />}>
             Open Sheet
           </SheetTrigger>
           <SheetContent>
@@ -470,7 +518,7 @@ export function Playground() {
       {/* ── Popover ─────────────────────────────────── */}
       <Section title="Popover">
         <Popover>
-          <PopoverTrigger render={<Button variant="secondary" />}>
+          <PopoverTrigger render={<Button />}>
             <i className="ri-filter-line" style={{ fontSize: "16px" }} />
             Filter
           </PopoverTrigger>
@@ -503,19 +551,19 @@ export function Playground() {
       <Section title="Tooltip">
         <div className="flex gap-3">
           <Tooltip>
-            <TooltipTrigger render={<Button variant="secondary" size="icon" />}>
+            <TooltipTrigger render={<Button size="icon" />}>
               <i className="ri-search-line" style={{ fontSize: "16px" }} />
             </TooltipTrigger>
             <TooltipContent>Search documentation</TooltipContent>
           </Tooltip>
           <Tooltip>
-            <TooltipTrigger render={<Button variant="secondary" size="icon" />}>
+            <TooltipTrigger render={<Button size="icon" />}>
               <i className="ri-notification-line" style={{ fontSize: "16px" }} />
             </TooltipTrigger>
             <TooltipContent>View notifications</TooltipContent>
           </Tooltip>
           <Tooltip>
-            <TooltipTrigger render={<Button variant="secondary" size="icon" />}>
+            <TooltipTrigger render={<Button size="icon" />}>
               <i className="ri-settings-line" style={{ fontSize: "16px" }} />
             </TooltipTrigger>
             <TooltipContent>Settings</TooltipContent>
@@ -644,7 +692,7 @@ export function Playground() {
         <div className="rounded-lg border border-border overflow-hidden h-48">
           <ResizablePanelGroup orientation="horizontal">
             <ResizablePanel defaultSize={30} minSize={20}>
-              <div className="flex h-full flex-col bg-muted/30 p-4">
+              <div className="flex h-full flex-col bg-muted p-4">
                 <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-2">
                   Sidebar
                 </p>
@@ -688,7 +736,6 @@ export function Playground() {
       <Section title="Sonner (Toast)">
         <div className="flex flex-wrap gap-3">
           <Button
-            variant="secondary"
             onClick={() =>
               toast.success("Deployment complete", {
                 description: "H100 cluster in US-West is now serving traffic.",
@@ -698,7 +745,6 @@ export function Playground() {
             Success Toast
           </Button>
           <Button
-            variant="secondary"
             onClick={() =>
               toast.error("Deployment failed", {
                 description: "Could not reach the US-East availability zone.",
@@ -708,7 +754,6 @@ export function Playground() {
             Error Toast
           </Button>
           <Button
-            variant="secondary"
             onClick={() =>
               toast.info("Maintenance window", {
                 description: "Scheduled downtime starts in 30 minutes.",

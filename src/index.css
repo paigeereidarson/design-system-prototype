@@ -55,8 +55,10 @@
     --color-muted: var(--muted);
     --color-secondary-foreground: var(--secondary-foreground);
     --color-secondary: var(--secondary);
+    --color-secondary-hover: var(--secondary-hover);
     --color-primary-foreground: var(--primary-foreground);
     --color-primary: var(--primary);
+    --color-primary-hover: var(--primary-hover);
     --color-popover-foreground: var(--popover-foreground);
     --color-popover: var(--popover);
     --color-card-foreground: var(--card-foreground);
@@ -71,6 +73,7 @@
     --color-neutral-50:  var(--neutral-50);
     --color-neutral-100: var(--neutral-100);
     --color-neutral-200: var(--neutral-200);
+    --color-neutral-300: var(--neutral-300);
     --color-neutral-500: var(--neutral-500);
     --color-neutral-900: var(--neutral-900);
     --color-neutral-950: var(--neutral-950);
@@ -140,12 +143,13 @@
 :root {
 
     /* White */
-    --white: #FFFFFF;
+    --white: #F9F9F9;
 
     /* Neutral */
     --neutral-50:  #FAFAFA;
     --neutral-100: #F5F5F5;
     --neutral-200: #E5E5E5;
+    --neutral-300: #D4D4D4;
     --neutral-500: #737373;
     --neutral-900: #171717;
     --neutral-950: #0A0A0A;
@@ -199,6 +203,41 @@
     --nvidia-green-800: #375500;
     --nvidia-green-900: #1E3200;
 
+    /* ── Dark primitives ──────────────────────────
+     * Desaturated at depth, vivid at 500.
+     * Used exclusively by .nvidia-dark.          */
+
+    /* Neutral dark */
+    --neutral-dark-50:  #1C1C1C;
+    --neutral-dark-100: #161616;
+    --neutral-dark-200: #111111;
+    --neutral-dark-300: #0E0E0E;
+    --neutral-dark-400: #0B0B0B;
+    --neutral-dark-500: #919193;
+    --neutral-dark-800: #090909;
+    --neutral-dark-900: #070707;
+    --neutral-dark-950: #050505;
+
+    /* Red dark */
+    --red-dark-500: #F87171;
+    --red-dark-800: #3B1515;
+    --red-dark-900: #2D1010;
+
+    /* Yellow dark */
+    --yellow-dark-500: #FACC15;
+    --yellow-dark-800: #3D2E08;
+    --yellow-dark-900: #2E2206;
+
+    /* Green dark */
+    --green-dark-500: #4ADE80;
+    --green-dark-800: #0D2B15;
+    --green-dark-900: #091E0F;
+
+    /* Blue dark */
+    --blue-dark-500: #60A5FA;
+    --blue-dark-800: #0C2545;
+    --blue-dark-900: #081A33;
+
     /* Radius */
     --radius-base: 4px;
 }
@@ -228,10 +267,12 @@
     /* Primary — NVIDIA brand green */
     --primary:              var(--nvidia-green-500);
     --primary-foreground:   var(--neutral-950);
+    --primary-hover:        var(--nvidia-green-600);
 
     /* Secondary */
-    --secondary:            var(--neutral-100);
+    --secondary:            var(--neutral-200);
     --secondary-foreground: var(--neutral-950);
+    --secondary-hover:      var(--neutral-300);
 
     /* Muted */
     --muted:                var(--neutral-100);
@@ -277,9 +318,95 @@
     --sidebar-foreground:         var(--neutral-950);
     --sidebar-primary:            var(--neutral-900);
     --sidebar-primary-foreground: var(--neutral-50);
-    --sidebar-accent:             var(--neutral-100);
+    --sidebar-accent:             var(--neutral-200);
     --sidebar-accent-foreground:  var(--neutral-900);
     --sidebar-border:             var(--neutral-200);
+    --sidebar-ring:               var(--nvidia-green-500);
+
+    /* Typography */
+    --font-sans:    'Inter Variable', 'Inter', system-ui, sans-serif;
+    --font-heading: 'Inter Variable', 'Inter', system-ui, sans-serif;
+}
+
+/* =============================================
+ * NVIDIA Dark Theme
+ * Mirrors .nvidia-light structure exactly.
+ * Uses dark primitives with less saturation at
+ * depth and vivid 500s for alerts/accents.
+ *
+ * Apply class="nvidia-dark" to the root element.
+ * ============================================= */
+.nvidia-dark {
+
+    /* Core */
+    --background:         var(--neutral-dark-200);
+    --foreground:         #E8E8E8;
+
+    /* Card — slightly lighter than background */
+    --card:               var(--neutral-dark-100);
+    --card-foreground:    #E8E8E8;
+
+    /* Popover */
+    --popover:            var(--neutral-dark-100);
+    --popover-foreground: #E8E8E8;
+
+    /* Primary — NVIDIA brand green, same as light */
+    --primary:              var(--nvidia-green-500);
+    --primary-foreground:   var(--neutral-dark-950);
+    --primary-hover:        var(--nvidia-green-600);
+
+    /* Secondary — darker stops than light theme */
+    --secondary:            var(--neutral-dark-50);
+    --secondary-foreground: #E8E8E8;
+    --secondary-hover:      #2A2A2A;
+
+    /* Muted */
+    --muted:                var(--neutral-dark-300);
+    --muted-foreground:     var(--neutral-dark-500);
+
+    /* Accent */
+    --accent:               var(--nvidia-green-500);
+    --accent-foreground:    var(--neutral-dark-950);
+
+    /* Semantic states — desaturated backgrounds, vivid foregrounds */
+    --destructive:            var(--red-dark-800);
+    --destructive-foreground: var(--red-dark-500);
+    --warn:                   var(--yellow-dark-800);
+    --warn-foreground:        var(--yellow-dark-500);
+    --success:                var(--green-dark-800);
+    --success-foreground:     var(--green-dark-500);
+
+    /* Solid fill — vivid backgrounds for high-emphasis */
+    --destructive-solid:            var(--red-500);
+    --destructive-solid-foreground: var(--white);
+    --warn-solid:                   var(--yellow-500);
+    --warn-solid-foreground:        var(--neutral-dark-950);
+    --success-solid:                var(--nvidia-green-500);
+    --success-solid-foreground:     var(--neutral-dark-950);
+
+    /* Borders & input */
+    --border: var(--neutral-dark-50);
+    --input:  var(--neutral-dark-50);
+    --ring:   var(--nvidia-green-500);
+
+    /* Charts */
+    --chart-1: var(--blue-dark-500);
+    --chart-2: var(--blue-500);
+    --chart-3: var(--blue-400);
+    --chart-4: var(--blue-300);
+    --chart-5: var(--blue-dark-800);
+
+    /* Radius */
+    --radius: var(--radius-base);
+
+    /* Sidebar — slightly darker than background */
+    --sidebar:                    var(--neutral-dark-300);
+    --sidebar-foreground:         #E8E8E8;
+    --sidebar-primary:            #E8E8E8;
+    --sidebar-primary-foreground: var(--neutral-dark-950);
+    --sidebar-accent:             var(--neutral-dark-50);
+    --sidebar-accent-foreground:  #E8E8E8;
+    --sidebar-border:             var(--neutral-dark-50);
     --sidebar-ring:               var(--nvidia-green-500);
 
     /* Typography */
