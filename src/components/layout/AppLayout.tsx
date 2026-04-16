@@ -8,19 +8,18 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
+  SidebarMenuSub,
+  SidebarMenuSubItem,
+  SidebarMenuSubButton,
   SidebarInset,
 } from "@/components/ui/sidebar"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { useTheme } from "@/hooks/use-theme"
+import { products } from "@/data/mock-products"
 import logoLight from "@/assets/docs-health-lm.png"
 import logoDark from "@/assets/docs-health-dm.png"
-
-const navItems = [
-  { label: "Overview", icon: "ri-dashboard-line", href: "/" },
-  { label: "Playground", icon: "ri-gamepad-line", href: "/playground" },
-]
 
 function formatTimestamp() {
   const now = new Date()
@@ -52,7 +51,6 @@ export function AppLayout() {
   return (
     <SidebarProvider>
       <Sidebar>
-        {/* Logomark */}
         <SidebarHeader className="px-3 py-3 !block">
           <img
             src={theme === "nvidia-light" ? logoLight : logoDark}
@@ -61,35 +59,66 @@ export function AppLayout() {
           />
         </SidebarHeader>
 
-        {/* Navigation */}
-        <SidebarContent className="p-2">
+        <SidebarContent className="p-2 flex flex-col justify-between">
           <SidebarMenu>
-            {navItems.map((item) => {
-              const isActive = item.href === "/"
-                ? location.pathname === "/"
-                : location.pathname.startsWith(item.href)
-              return (
-                <SidebarMenuItem key={item.label}>
-                  <SidebarMenuButton
-                    isActive={isActive}
-                    onClick={() => navigate(item.href)}
-                    className={isActive ? "text-sm" : "text-sm text-muted-foreground"}
-                  >
-                    <i
-                      className={item.icon}
-                      style={{ fontSize: "14px" }}
-                    />
-                    <span>{item.label}</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              )
-            })}
+            {/* My Products — clickable landing page with product sub-items */}
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                isActive={location.pathname === "/my-products"}
+                onClick={() => navigate("/my-products")}
+                className={location.pathname === "/my-products" ? "text-sm" : "text-sm text-muted-foreground"}
+              >
+                <i className="ri-stack-line" style={{ fontSize: "14px" }} />
+                <span>My Products</span>
+              </SidebarMenuButton>
+              <SidebarMenuSub>
+                {products.map(product => {
+                  const isActive = location.pathname.startsWith(`/products/${product.id}`)
+                  return (
+                    <SidebarMenuSubItem key={product.id}>
+                      <SidebarMenuSubButton
+                        isActive={isActive}
+                        onClick={() => navigate(`/products/${product.id}`)}
+                        className="cursor-pointer"
+                      >
+                        <span>{product.name}</span>
+                      </SidebarMenuSubButton>
+                    </SidebarMenuSubItem>
+                  )
+                })}
+              </SidebarMenuSub>
+            </SidebarMenuItem>
+
+            {/* All Products (was Overview) */}
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                isActive={location.pathname === "/"}
+                onClick={() => navigate("/")}
+                className={location.pathname === "/" ? "text-sm" : "text-sm text-muted-foreground"}
+              >
+                <i className="ri-dashboard-line" style={{ fontSize: "14px" }} />
+                <span>All Products</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+
+          {/* Bottom nav */}
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                isActive={location.pathname === "/playground"}
+                onClick={() => navigate("/playground")}
+                className={location.pathname === "/playground" ? "text-sm" : "text-sm text-muted-foreground"}
+              >
+                <i className="ri-gamepad-line" style={{ fontSize: "14px" }} />
+                <span>Playground</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
           </SidebarMenu>
         </SidebarContent>
       </Sidebar>
 
       <SidebarInset className="h-screen overflow-hidden">
-        {/* Top bar */}
         <header className="flex items-center justify-end gap-3 px-4 shrink-0 bg-muted" style={{ paddingTop: 15, paddingBottom: 13 }}>
           <Button
             variant="secondary"
@@ -118,9 +147,7 @@ export function AppLayout() {
           </Avatar>
         </header>
 
-        {/* Level 0 — gray canvas (fixed) */}
         <div className="flex-1 flex flex-col bg-muted pr-2 pb-2 pl-3 overflow-hidden">
-          {/* Level 1 — white content card (fixed frame, content scrolls inside) */}
           <div className="flex-1 flex flex-col bg-background border border-border rounded-xl overflow-hidden">
             <div ref={scrollRef} className="flex-1 overflow-y-auto p-4">
               <Outlet />

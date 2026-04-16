@@ -4,7 +4,10 @@ import { TooltipProvider } from "@/components/ui/tooltip"
 import { Toaster } from "@/components/ui/sonner"
 import { AppLayout } from "@/components/layout/AppLayout"
 import { Home } from "@/pages/Home"
+import { MyProducts } from "@/pages/MyProducts"
 import { Playground } from "@/pages/Playground"
+import { ProductDetail } from "@/pages/ProductDetail"
+import { DocPageDetail } from "@/pages/DocPageDetail"
 
 function App() {
   return (
@@ -13,7 +16,10 @@ function App() {
         <Routes>
           <Route element={<AppLayout />}>
             <Route path="/" element={<Home />} />
+            <Route path="/my-products" element={<MyProducts />} />
             <Route path="/playground" element={<Playground />} />
+            <Route path="/products/:id" element={<ProductDetail />} />
+            <Route path="/products/:id/pages/:pageId" element={<DocPageDetail />} />
           </Route>
         </Routes>
         <Toaster />

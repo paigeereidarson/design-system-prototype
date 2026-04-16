@@ -207,16 +207,18 @@
      * Desaturated at depth, vivid at 500.
      * Used exclusively by .nvidia-dark.          */
 
-    /* Neutral dark */
-    --neutral-dark-50:  #1C1C1C;
+    /* Neutral dark — 50 is darkest, 950 is lightest */
+    --neutral-dark-50:  #111111;
     --neutral-dark-100: #161616;
-    --neutral-dark-200: #111111;
-    --neutral-dark-300: #0E0E0E;
-    --neutral-dark-400: #0B0B0B;
-    --neutral-dark-500: #919193;
-    --neutral-dark-800: #090909;
-    --neutral-dark-900: #070707;
-    --neutral-dark-950: #050505;
+    --neutral-dark-200: #262626;
+    --neutral-dark-300: #333333;
+    --neutral-dark-400: #525252;
+    --neutral-dark-500: #737373;
+    --neutral-dark-600: #8A8A8A;
+    --neutral-dark-700: #A3A3A3;
+    --neutral-dark-800: #BABABA;
+    --neutral-dark-900: #D4D4D4;
+    --neutral-dark-950: #E8E8E8;
 
     /* Red dark */
     --red-dark-500: #F87171;
@@ -339,34 +341,34 @@
 .nvidia-dark {
 
     /* Core */
-    --background:         var(--neutral-dark-200);
-    --foreground:         #E8E8E8;
+    --background:         var(--neutral-dark-50);
+    --foreground:         var(--neutral-dark-950);
 
     /* Card — slightly lighter than background */
     --card:               var(--neutral-dark-100);
-    --card-foreground:    #E8E8E8;
+    --card-foreground:    var(--neutral-dark-950);
 
     /* Popover */
     --popover:            var(--neutral-dark-100);
-    --popover-foreground: #E8E8E8;
+    --popover-foreground: var(--neutral-dark-950);
 
     /* Primary — NVIDIA brand green, same as light */
     --primary:              var(--nvidia-green-500);
-    --primary-foreground:   var(--neutral-dark-950);
+    --primary-foreground:   var(--neutral-dark-50);
     --primary-hover:        var(--nvidia-green-600);
 
-    /* Secondary — darker stops than light theme */
-    --secondary:            var(--neutral-dark-50);
-    --secondary-foreground: #E8E8E8;
-    --secondary-hover:      #2A2A2A;
+    /* Secondary — buttons, badges */
+    --secondary:            var(--neutral-dark-200);
+    --secondary-foreground: var(--neutral-dark-950);
+    --secondary-hover:      var(--neutral-dark-300);
 
     /* Muted */
-    --muted:                var(--neutral-dark-300);
-    --muted-foreground:     var(--neutral-dark-500);
+    --muted:                #0E0E0E;
+    --muted-foreground:     #919193;
 
     /* Accent */
     --accent:               var(--nvidia-green-500);
-    --accent-foreground:    var(--neutral-dark-950);
+    --accent-foreground:    #050505;
 
     /* Semantic states — desaturated backgrounds, vivid foregrounds */
     --destructive:            var(--red-dark-800);
@@ -380,13 +382,13 @@
     --destructive-solid:            var(--red-500);
     --destructive-solid-foreground: var(--white);
     --warn-solid:                   var(--yellow-500);
-    --warn-solid-foreground:        var(--neutral-dark-950);
+    --warn-solid-foreground:        #050505;
     --success-solid:                var(--nvidia-green-500);
-    --success-solid-foreground:     var(--neutral-dark-950);
+    --success-solid-foreground:     #050505;
 
     /* Borders & input */
-    --border: var(--neutral-dark-50);
-    --input:  var(--neutral-dark-50);
+    --border: #1C1C1C;
+    --input:  #1C1C1C;
     --ring:   var(--nvidia-green-500);
 
     /* Charts */
@@ -400,13 +402,13 @@
     --radius: var(--radius-base);
 
     /* Sidebar — slightly darker than background */
-    --sidebar:                    var(--neutral-dark-300);
+    --sidebar:                    #0E0E0E;
     --sidebar-foreground:         #E8E8E8;
     --sidebar-primary:            #E8E8E8;
-    --sidebar-primary-foreground: var(--neutral-dark-950);
-    --sidebar-accent:             var(--neutral-dark-50);
+    --sidebar-primary-foreground: #050505;
+    --sidebar-accent:             #1C1C1C;
     --sidebar-accent-foreground:  #E8E8E8;
-    --sidebar-border:             var(--neutral-dark-50);
+    --sidebar-border:             #1C1C1C;
     --sidebar-ring:               var(--nvidia-green-500);
 
     /* Typography */

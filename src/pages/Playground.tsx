@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { useTheme } from "@/hooks/use-theme"
 import { toast } from "sonner"
 import {
   Accordion,
@@ -99,6 +100,25 @@ import {
   TooltipContent,
 } from "@/components/ui/tooltip"
 
+function ColorRamp({ name, stops }: { name: string; stops: { label: string; color: string }[] }) {
+  return (
+    <div className="flex flex-col gap-2">
+      <p className="text-xs font-medium text-foreground">{name}</p>
+      <div className="flex gap-1">
+        {stops.map(stop => (
+          <div key={stop.label} className="flex flex-col items-center gap-1">
+            <div
+              className="w-12 h-12 rounded-md border border-border"
+              style={{ backgroundColor: stop.color }}
+            />
+            <span className="text-xs text-muted-foreground">{stop.label}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="flex flex-col gap-4">
@@ -111,6 +131,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 }
 
 export function Playground() {
+  const { theme } = useTheme()
   const [calDate, setCalDate] = useState<Date | undefined>(new Date())
   const [switchOn, setSwitchOn] = useState(true)
   const [progress] = useState(68)
@@ -715,6 +736,105 @@ export function Playground() {
           <span>Settings</span>
         </div>
       </Section>
+
+      <Separator />
+
+      {/* ── Color Ramps ──────────────────────────────── */}
+      {theme === "nvidia-light" && <Section title="Color Ramps — Light Primitives">
+        <ColorRamp name="Neutral" stops={[
+          { label: "50", color: "var(--neutral-50)" },
+          { label: "100", color: "var(--neutral-100)" },
+          { label: "200", color: "var(--neutral-200)" },
+          { label: "300", color: "var(--neutral-300)" },
+          { label: "500", color: "var(--neutral-500)" },
+          { label: "900", color: "var(--neutral-900)" },
+          { label: "950", color: "var(--neutral-950)" },
+        ]} />
+        <ColorRamp name="Red" stops={[
+          { label: "100", color: "var(--red-100)" },
+          { label: "200", color: "var(--red-200)" },
+          { label: "300", color: "var(--red-300)" },
+          { label: "400", color: "var(--red-400)" },
+          { label: "500", color: "var(--red-500)" },
+          { label: "600", color: "var(--red-600)" },
+          { label: "700", color: "var(--red-700)" },
+          { label: "800", color: "var(--red-800)" },
+          { label: "900", color: "var(--red-900)" },
+        ]} />
+        <ColorRamp name="Yellow" stops={[
+          { label: "100", color: "var(--yellow-100)" },
+          { label: "200", color: "var(--yellow-200)" },
+          { label: "300", color: "var(--yellow-300)" },
+          { label: "400", color: "var(--yellow-400)" },
+          { label: "500", color: "var(--yellow-500)" },
+          { label: "600", color: "var(--yellow-600)" },
+          { label: "700", color: "var(--yellow-700)" },
+          { label: "800", color: "var(--yellow-800)" },
+          { label: "900", color: "var(--yellow-900)" },
+        ]} />
+        <ColorRamp name="Green" stops={[
+          { label: "100", color: "var(--green-100)" },
+          { label: "700", color: "var(--green-700)" },
+        ]} />
+        <ColorRamp name="Blue" stops={[
+          { label: "100", color: "var(--blue-100)" },
+          { label: "200", color: "var(--blue-200)" },
+          { label: "300", color: "var(--blue-300)" },
+          { label: "400", color: "var(--blue-400)" },
+          { label: "500", color: "var(--blue-500)" },
+          { label: "600", color: "var(--blue-600)" },
+          { label: "700", color: "var(--blue-700)" },
+          { label: "800", color: "var(--blue-800)" },
+          { label: "900", color: "var(--blue-900)" },
+        ]} />
+        <ColorRamp name="NVIDIA Green" stops={[
+          { label: "100", color: "var(--nvidia-green-100)" },
+          { label: "200", color: "var(--nvidia-green-200)" },
+          { label: "300", color: "var(--nvidia-green-300)" },
+          { label: "400", color: "var(--nvidia-green-400)" },
+          { label: "500", color: "var(--nvidia-green-500)" },
+          { label: "600", color: "var(--nvidia-green-600)" },
+          { label: "700", color: "var(--nvidia-green-700)" },
+          { label: "800", color: "var(--nvidia-green-800)" },
+          { label: "900", color: "var(--nvidia-green-900)" },
+        ]} />
+      </Section>}
+
+      {theme === "nvidia-dark" && <Section title="Color Ramps — Dark Primitives">
+        <ColorRamp name="Neutral Dark" stops={[
+          { label: "50", color: "var(--neutral-dark-50)" },
+          { label: "100", color: "var(--neutral-dark-100)" },
+          { label: "200", color: "var(--neutral-dark-200)" },
+          { label: "300", color: "var(--neutral-dark-300)" },
+          { label: "400", color: "var(--neutral-dark-400)" },
+          { label: "500", color: "var(--neutral-dark-500)" },
+          { label: "600", color: "var(--neutral-dark-600)" },
+          { label: "700", color: "var(--neutral-dark-700)" },
+          { label: "800", color: "var(--neutral-dark-800)" },
+          { label: "900", color: "var(--neutral-dark-900)" },
+          { label: "950", color: "var(--neutral-dark-950)" },
+        ]} />
+        <ColorRamp name="Red Dark" stops={[
+          { label: "500", color: "var(--red-dark-500)" },
+          { label: "800", color: "var(--red-dark-800)" },
+          { label: "900", color: "var(--red-dark-900)" },
+        ]} />
+        <ColorRamp name="Yellow Dark" stops={[
+          { label: "500", color: "var(--yellow-dark-500)" },
+          { label: "800", color: "var(--yellow-dark-800)" },
+          { label: "900", color: "var(--yellow-dark-900)" },
+        ]} />
+        <ColorRamp name="Green Dark" stops={[
+          { label: "500", color: "var(--green-dark-500)" },
+          { label: "800", color: "var(--green-dark-800)" },
+          { label: "900", color: "var(--green-dark-900)" },
+        ]} />
+        <ColorRamp name="Blue Dark" stops={[
+          { label: "500", color: "var(--blue-dark-500)" },
+          { label: "800", color: "var(--blue-dark-800)" },
+          { label: "900", color: "var(--blue-dark-900)" },
+        ]} />
+      </Section>}
     </div>
   )
 }
