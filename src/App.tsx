@@ -15,10 +15,11 @@ function App() {
     <BrowserRouter>
       <TooltipProvider>
         <Routes>
+          <Route path="/" element={<Onboarding />} />
           <Route path="/onboarding" element={<Onboarding />} />
           <Route element={<AppLayout />}>
-            <Route path="/" element={<Home />} />
             <Route path="/my-products" element={<MyProducts />} />
+            <Route path="/all-products" element={<Home />} />
             <Route path="/playground" element={<Playground />} />
             <Route path="/products/:id" element={<ProductDetail />} />
             <Route path="/products/:id/pages/:pageId" element={<DocPageDetail />} />
