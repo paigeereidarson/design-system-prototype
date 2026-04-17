@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom"
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import { Agentation } from "agentation"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { Toaster } from "@/components/ui/sonner"
@@ -15,8 +15,9 @@ function App() {
       <TooltipProvider>
         <Routes>
           <Route element={<AppLayout />}>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<Navigate to="/my-products" replace />} />
             <Route path="/my-products" element={<MyProducts />} />
+            <Route path="/all-products" element={<Home />} />
             <Route path="/playground" element={<Playground />} />
             <Route path="/products/:id" element={<ProductDetail />} />
             <Route path="/products/:id/pages/:pageId" element={<DocPageDetail />} />

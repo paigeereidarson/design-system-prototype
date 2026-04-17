@@ -89,12 +89,12 @@ export function AppLayout() {
               </SidebarMenuSub>
             </SidebarMenuItem>
 
-            {/* All Products (was Overview) */}
+            {/* All Products */}
             <SidebarMenuItem>
               <SidebarMenuButton
-                isActive={location.pathname === "/"}
-                onClick={() => navigate("/")}
-                className={location.pathname === "/" ? "text-sm" : "text-sm text-muted-foreground"}
+                isActive={location.pathname === "/all-products"}
+                onClick={() => navigate("/all-products")}
+                className={location.pathname === "/all-products" ? "text-sm" : "text-sm text-muted-foreground"}
               >
                 <i className="ri-dashboard-line" style={{ fontSize: "14px" }} />
                 <span>All Products</span>
