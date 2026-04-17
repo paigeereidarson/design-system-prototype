@@ -5,6 +5,12 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu"
 import { PageHeader } from "@/components/custom/PageHeader"
 import { InlineDrawer } from "@/components/custom/InlineDrawer"
 import { useSubscribedProductIds } from "@/hooks/use-subscribed-products"
@@ -15,6 +21,7 @@ import {
   type Product,
 } from "@/data/mock-products"
 
+// --- Types ---
 interface ActionMetric {
   label: string
   value: string
@@ -30,6 +37,13 @@ interface ActionItem {
   title: string
   description: string
   metrics: ActionMetric[]
+}
+
+interface WatchedItem {
+  id: string
+  title: string
+  description: string
+  productLabel: string
 }
 
 // --- Data ---
@@ -93,6 +107,94 @@ const actions: ActionItem[] = [
       { label: "Weekly Visitors", value: "800" },
     ],
   },
+  // --- Backfill items (beyond top 5) ---
+  {
+    id: "nemo-update",
+    productId: "nemo-llm",
+    insightId: "nemo-critical",
+    title: "Update NeMo LLM Get Started guide",
+    description:
+      "The installation steps reference NeMo 1.8, but the latest stable release is 2.1. Users following this guide will configure an outdated version, which may cause compatibility issues.",
+    metrics: [
+      { label: "Last Update", value: "14 months ago" },
+      { label: "Sentiment", value: "28%", tone: "destructive", trend: "down" },
+    ],
+  },
+  {
+    id: "cuda-forum-backlog",
+    productId: "cuda",
+    insightId: "cuda-forum-backlog",
+    title: "Clear backlog of 8 unanswered CUDA installation forum threads",
+    description:
+      "Average time-to-first-response on CUDA installation topics has gone from 4 hours to 3 days. Eight threads have zero replies, oldest is 12 days old.",
+    metrics: [
+      { label: "Unanswered", value: "8", tone: "destructive" },
+      { label: "Oldest", value: "12 days" },
+    ],
+  },
+  {
+    id: "cuda-search-exits",
+    productId: "cuda",
+    insightId: "cuda-search-exits",
+    title: "Investigate 42% search exit rate for 'cuda install linux'",
+    description:
+      "1,204 searches this month for 'cuda install linux' exit without clicking any result. Install pages may not be matching user intent.",
+    metrics: [
+      { label: "Exit Rate", value: "42%", tone: "destructive" },
+      { label: "Searches", value: "1,204" },
+    ],
+  },
+  {
+    id: "bionemo-hard-to-find",
+    productId: "bionemo",
+    insightId: "bionemo-hard-to-find",
+    title: "Monitor BioNeMo Models page search traffic",
+    description:
+      "Organic search visits to the Models page dropped 15% this month. Correlates with recent site migration — may recover within 2-3 weeks.",
+    metrics: [
+      { label: "Search Visits", value: "↓ 15%", trend: "down" },
+    ],
+  },
+]
+
+// --- Initial watched items (placeholder state) ---
+const initialWatchedItems: WatchedItem[] = [
+  {
+    id: "w-tensorrt-migration",
+    productLabel: "TensorRT",
+    title: "TensorRT 10 migration breaking example code",
+    description: "Python examples reference deprecated APIs from version 8.",
+  },
+  {
+    id: "w-triton-config",
+    productLabel: "Triton",
+    title: "Triton model repository structure confusion",
+    description: "Users asking where config.pbtxt should live in their project.",
+  },
+  {
+    id: "w-rapids-memory",
+    productLabel: "RAPIDS",
+    title: "cuDF GPU out-of-memory errors on large dataframes",
+    description: "Memory management guidance may need better signposting.",
+  },
+  {
+    id: "w-cuda-windows",
+    productLabel: "CUDA",
+    title: "CUDA runtime version mismatch warnings on Windows",
+    description: "Two user reports this week about version conflicts.",
+  },
+  {
+    id: "w-bionemo-smiles",
+    productLabel: "BioNeMo",
+    title: "SMILES input format preprocessing confusion",
+    description: "Forum threads about input preprocessing are accumulating.",
+  },
+  {
+    id: "w-dgx-billing",
+    productLabel: "DGX Cloud",
+    title: "DGX Cloud billing documentation gaps",
+    description: "Users asking about per-node pricing in the quickstart.",
+  },
 ]
 
 // --- Helpers ---
@@ -102,6 +204,30 @@ function findInsightAndProduct(action: ActionItem): { insight: Insight; product:
   const insight = product.insights.find(i => i.id === action.insightId)
   if (!insight) return null
   return { insight, product }
+}
+
+const availableProductsFallback = [
+  { id: "cuda-x", name: "CUDA-X" }, { id: "hpc-sdk", name: "HPC SDK" },
+  { id: "base-command", name: "Base Command" }, { id: "fleet-command", name: "Fleet Command" },
+  { id: "clara", name: "Clara" }, { id: "monai", name: "MONAI" },
+  { id: "megatron", name: "Megatron" }, { id: "tensorrt-llm", name: "TensorRT-LLM" },
+  { id: "metropolis", name: "Metropolis" }, { id: "jetpack", name: "JetPack SDK" },
+  { id: "dali", name: "DALI" }, { id: "cudf", name: "cuDF" },
+  { id: "drive-sim", name: "DRIVE Sim" }, { id: "drive-os", name: "DRIVE OS" },
+  { id: "driveworks", name: "DriveWorks SDK" },
+  { id: "tensorrt", name: "TensorRT" }, { id: "deepstream", name: "DeepStream SDK" },
+  { id: "triton", name: "Triton Inference Server" }, { id: "rapids", name: "RAPIDS" },
+  { id: "omniverse", name: "Omniverse" }, { id: "isaac-sim", name: "Isaac Sim" },
+  { id: "nemo-framework", name: "NeMo Framework" }, { id: "cuquantum", name: "cuQuantum" },
+  { id: "drive-agx", name: "DRIVE AGX" }, { id: "nemo-llm", name: "NeMo LLM" },
+]
+
+const productNameMap: Record<string, string> = Object.fromEntries(
+  [...products, ...availableProductsFallback].map(p => [p.id, p.name])
+)
+
+function getProductName(id: string): string {
+  return productNameMap[id] ?? id
 }
 
 // --- Metric Block ---
@@ -131,15 +257,35 @@ function Metric({ metric }: { metric: ActionMetric }) {
   )
 }
 
-// --- Insight Panel (inline content for the drawer) ---
-function InsightPanel({ insight, product }: { insight: Insight; product: Product }) {
+// --- Insight Panel (Details drawer) ---
+function InsightPanel({
+  action, insight, product, onWatch,
+}: {
+  action: ActionItem
+  insight: Insight
+  product: Product
+  onWatch?: () => void
+}) {
   return (
     <div className="flex flex-col gap-4">
-      <div>
+      <div className="flex flex-col gap-2">
         <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Assessment</p>
-        <h3 className="text-heading-sm font-semibold text-foreground mt-1">{insight.summary}</h3>
+        <h3 className="text-heading-sm font-semibold text-foreground">{action.title}</h3>
+        <p className="text-sm text-muted-foreground">{action.description}</p>
       </div>
-      <div className="flex gap-2">
+      {action.metrics.length > 0 && (
+        <div className="flex items-start gap-8 pt-1">
+          {action.metrics.map((m, i) => (
+            <Metric key={i} metric={m} />
+          ))}
+        </div>
+      )}
+      <div className="flex flex-wrap gap-2">
+        {onWatch && (
+          <Button variant="default" onClick={onWatch}>
+            <i className="ri-eye-line" style={{ fontSize: "14px" }} /> Watch
+          </Button>
+        )}
         <Button variant="default">
           <i className="ri-share-line" style={{ fontSize: "14px" }} /> Share
         </Button>
@@ -181,52 +327,126 @@ function InsightPanel({ insight, product }: { insight: Insight; product: Product
   )
 }
 
-// --- Action Card ---
-function ActionCard({ action, onDetails }: { action: ActionItem; onDetails: () => void }) {
+// --- Actions Menu (three-dot) ---
+function ActionsMenu({ onDismiss }: { onDismiss: () => void }) {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger
+        className="flex items-center justify-center size-8 rounded-md text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+        aria-label="More actions"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <i className="ri-more-2-line" style={{ fontSize: "18px" }} />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-56">
+        <DropdownMenuItem onClick={onDismiss}>I resolved this issue</DropdownMenuItem>
+        <DropdownMenuItem onClick={onDismiss}>This is irrelevant</DropdownMenuItem>
+        <DropdownMenuItem onClick={onDismiss}>This isn't a problem anymore</DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
+
+// --- Action Card (Top 5) ---
+function ActionCard({
+  action, exiting, onDetails, onWatch, onDismiss,
+}: {
+  action: ActionItem
+  exiting: boolean
+  onDetails: () => void
+  onWatch: () => void
+  onDismiss: () => void
+}) {
+  return (
+    <div
+      className={`transition-all duration-300 ${
+        exiting ? "opacity-0 scale-95 -translate-x-2 max-h-0 overflow-hidden" : "opacity-100 scale-100 max-h-[400px]"
+      }`}
+    >
+      <Card>
+        <CardContent>
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex flex-col gap-2 flex-1">
+              <h3 className="text-heading-sm font-semibold text-foreground">{action.title}</h3>
+              <p className="text-sm text-muted-foreground">{action.description}</p>
+            </div>
+            <ActionsMenu onDismiss={onDismiss} />
+          </div>
+
+          <div className="flex items-end justify-between gap-4 mt-6">
+            <div className="flex items-start gap-8">
+              {action.metrics.map((m, i) => (
+                <Metric key={i} metric={m} />
+              ))}
+            </div>
+            <div className="flex items-center gap-2">
+              <Button variant="secondary" onClick={onDetails}>Details</Button>
+              <Button variant="secondary" onClick={onWatch}>
+                <i className="ri-eye-line" style={{ fontSize: "14px" }} />
+                Watch
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
+
+// --- Compact Watched Card (inside Watching drawer) ---
+function WatchedCard({
+  item, onUnwatch,
+}: {
+  item: WatchedItem
+  onUnwatch: () => void
+}) {
   return (
     <Card>
       <CardContent>
-        <div className="flex flex-col gap-2">
-          <h3 className="text-heading-sm font-semibold text-foreground">{action.title}</h3>
-          <p className="text-sm text-muted-foreground">{action.description}</p>
-        </div>
-
-        <div className="flex items-end justify-between gap-4 mt-6">
-          <div className="flex items-start gap-8">
-            {action.metrics.map((m, i) => (
-              <Metric key={i} metric={m} />
-            ))}
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex flex-col gap-1 flex-1 min-w-0">
+            <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">{item.productLabel}</p>
+            <h4 className="text-sm font-semibold text-foreground">{item.title}</h4>
+            <p className="text-xs text-muted-foreground mt-1">{item.description}</p>
           </div>
-          <Button variant="secondary" onClick={onDetails}>Details</Button>
+          <ActionsMenu onDismiss={onUnwatch} />
+        </div>
+        <div className="flex items-center justify-end gap-2 mt-3">
+          <Button variant="secondary" size="default">Details</Button>
+          <Button variant="secondary" size="default" onClick={onUnwatch}>
+            <i className="ri-eye-fill" style={{ fontSize: "14px" }} />
+            Watching
+          </Button>
         </div>
       </CardContent>
     </Card>
   )
 }
 
-// Fallback names for products not in the full products array
-const availableProductsFallback = [
-  { id: "cuda-x", name: "CUDA-X" }, { id: "hpc-sdk", name: "HPC SDK" },
-  { id: "base-command", name: "Base Command" }, { id: "fleet-command", name: "Fleet Command" },
-  { id: "clara", name: "Clara" }, { id: "monai", name: "MONAI" },
-  { id: "megatron", name: "Megatron" }, { id: "tensorrt-llm", name: "TensorRT-LLM" },
-  { id: "metropolis", name: "Metropolis" }, { id: "jetpack", name: "JetPack SDK" },
-  { id: "dali", name: "DALI" }, { id: "cudf", name: "cuDF" },
-  { id: "drive-sim", name: "DRIVE Sim" }, { id: "drive-os", name: "DRIVE OS" },
-  { id: "driveworks", name: "DriveWorks SDK" },
-  { id: "tensorrt", name: "TensorRT" }, { id: "deepstream", name: "DeepStream SDK" },
-  { id: "triton", name: "Triton Inference Server" }, { id: "rapids", name: "RAPIDS" },
-  { id: "omniverse", name: "Omniverse" }, { id: "isaac-sim", name: "Isaac Sim" },
-  { id: "nemo-framework", name: "NeMo Framework" }, { id: "cuquantum", name: "cuQuantum" },
-  { id: "drive-agx", name: "DRIVE AGX" }, { id: "nemo-llm", name: "NeMo LLM" },
-]
-
-const productNameMap: Record<string, string> = Object.fromEntries(
-  [...products, ...availableProductsFallback].map(p => [p.id, p.name])
-)
-
-function getProductName(id: string): string {
-  return productNameMap[id] ?? id
+// --- Watching Panel (inside drawer) ---
+function WatchingPanel({ items, onUnwatch }: { items: WatchedItem[]; onUnwatch: (id: string) => void }) {
+  return (
+    <div className="flex flex-col gap-4">
+      <div>
+        <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Watching</p>
+        <h3 className="text-heading-sm font-semibold text-foreground mt-1">
+          {items.length} issue{items.length === 1 ? "" : "s"} you're tracking
+        </h3>
+        <p className="text-sm text-muted-foreground mt-1">
+          Things you want to monitor but haven't prioritized as a top action yet.
+        </p>
+      </div>
+      <Separator />
+      <div className="flex flex-col gap-3">
+        {items.map(item => (
+          <WatchedCard key={item.id} item={item} onUnwatch={() => onUnwatch(item.id)} />
+        ))}
+        {items.length === 0 && (
+          <p className="text-sm text-muted-foreground text-center py-8">Nothing being watched right now.</p>
+        )}
+      </div>
+    </div>
+  )
 }
 
 // --- Page ---
@@ -234,20 +454,91 @@ export function MyProducts() {
   const [subscribedIds] = useSubscribedProductIds()
   const [filter, setFilter] = useState<string>("all")
   const [selectedAction, setSelectedAction] = useState<ActionItem | null>(null)
+  const [watchingOpen, setWatchingOpen] = useState(false)
+  const [dismissedIds, setDismissedIds] = useState<Set<string>>(new Set())
+  const [watchedActionIds, setWatchedActionIds] = useState<string[]>([])
+  const [exitingIds, setExitingIds] = useState<Set<string>>(new Set())
+  const [badgePulsing, setBadgePulsing] = useState(false)
 
-  // Build filter tabs dynamically from subscribed products
   const filterLabels = [
     { value: "all", label: "All My Products" },
     ...subscribedIds.map(id => ({ value: id, label: getProductName(id) })),
   ]
 
-  // Filter actions to only show those for subscribed products, then by tab
-  const subscribedActions = actions.filter(a => subscribedIds.includes(a.productId))
-  const filtered = filter === "all"
-    ? subscribedActions
-    : subscribedActions.filter(a => a.productId === filter)
+  const pool = actions.filter(a =>
+    subscribedIds.includes(a.productId) &&
+    !dismissedIds.has(a.id) &&
+    !watchedActionIds.includes(a.id)
+  )
+  const filteredPool = filter === "all" ? pool : pool.filter(a => a.productId === filter)
+  const visibleActions = filteredPool.slice(0, 5)
+
+  const watchedActionItems: WatchedItem[] = watchedActionIds.map(id => {
+    const action = actions.find(a => a.id === id)
+    return action
+      ? {
+          id: action.id,
+          productLabel: getProductName(action.productId),
+          title: action.title,
+          description: action.description,
+        }
+      : null
+  }).filter((x): x is WatchedItem => x !== null)
+
+  const watchingItems = [...watchedActionItems, ...initialWatchedItems]
+  const watchingCount = watchingItems.length
 
   const drawerData = selectedAction ? findInsightAndProduct(selectedAction) : null
+
+  function openDetails(action: ActionItem) {
+    setWatchingOpen(false)
+    setSelectedAction(action)
+  }
+
+  function closeDetails() {
+    setSelectedAction(null)
+  }
+
+  function openWatching() {
+    setSelectedAction(null)
+    setWatchingOpen(true)
+  }
+
+  function closeWatching() {
+    setWatchingOpen(false)
+  }
+
+  function handleWatch(action: ActionItem) {
+    setExitingIds(prev => new Set(prev).add(action.id))
+    setTimeout(() => {
+      setWatchedActionIds(prev => [action.id, ...prev])
+      setExitingIds(prev => {
+        const next = new Set(prev)
+        next.delete(action.id)
+        return next
+      })
+      setBadgePulsing(true)
+      setTimeout(() => setBadgePulsing(false), 450)
+    }, 300)
+  }
+
+  function handleDismiss(action: ActionItem) {
+    setExitingIds(prev => new Set(prev).add(action.id))
+    setTimeout(() => {
+      setDismissedIds(prev => new Set(prev).add(action.id))
+      setExitingIds(prev => {
+        const next = new Set(prev)
+        next.delete(action.id)
+        return next
+      })
+    }, 300)
+  }
+
+  function handleUnwatch(itemId: string) {
+    if (watchedActionIds.includes(itemId)) {
+      setWatchedActionIds(prev => prev.filter(id => id !== itemId))
+    }
+  }
 
   return (
     <div className="relative">
@@ -259,33 +550,67 @@ export function MyProducts() {
         />
 
         <section className="flex flex-col gap-3">
-          <Tabs value={filter} onValueChange={(v) => setFilter(v)}>
-            <TabsList variant="pill">
-              {filterLabels.map(f => (
-                <TabsTrigger key={f.value} value={f.value}>{f.label}</TabsTrigger>
-              ))}
-            </TabsList>
-          </Tabs>
+          <div className="flex items-center justify-between gap-4">
+            <Tabs value={filter} onValueChange={(v) => setFilter(v)}>
+              <TabsList variant="pill">
+                {filterLabels.map(f => (
+                  <TabsTrigger key={f.value} value={f.value}>{f.label}</TabsTrigger>
+                ))}
+              </TabsList>
+            </Tabs>
+            <Button
+              variant="secondary"
+              onClick={watchingOpen ? closeWatching : openWatching}
+              aria-expanded={watchingOpen}
+            >
+              <i className="ri-eye-line" style={{ fontSize: "14px" }} />
+              Watching
+              <Badge
+                variant="default"
+                className={`ml-1 transition-colors duration-300 ${
+                  badgePulsing ? "!bg-primary !text-primary-foreground" : ""
+                }`}
+              >
+                {watchingCount}
+              </Badge>
+            </Button>
+          </div>
 
           <div className="flex flex-col gap-3 mt-2">
-            {filtered.map(action => (
+            {visibleActions.map(action => (
               <ActionCard
                 key={action.id}
                 action={action}
-                onDetails={() => setSelectedAction(action)}
+                exiting={exitingIds.has(action.id)}
+                onDetails={() => openDetails(action)}
+                onWatch={() => handleWatch(action)}
+                onDismiss={() => handleDismiss(action)}
               />
             ))}
-            {filtered.length === 0 && (
+            {visibleActions.length === 0 && (
               <p className="text-sm text-muted-foreground">No actions for this product right now.</p>
             )}
           </div>
         </section>
       </div>
 
-      <InlineDrawer open={selectedAction !== null} onClose={() => setSelectedAction(null)}>
-        {drawerData && (
-          <InsightPanel insight={drawerData.insight} product={drawerData.product} />
+      <InlineDrawer open={selectedAction !== null} onClose={closeDetails}>
+        {drawerData && selectedAction && (
+          <InsightPanel
+            action={selectedAction}
+            insight={drawerData.insight}
+            product={drawerData.product}
+            onWatch={() => {
+              const a = selectedAction
+              closeDetails()
+              handleWatch(a)
+            }}
+          />
         )}
+      </InlineDrawer>
+
+      <InlineDrawer open={watchingOpen} onClose={closeWatching}>
+        <WatchingPanel items={watchingItems} onUnwatch={handleUnwatch} />
       </InlineDrawer>
     </div>
   )

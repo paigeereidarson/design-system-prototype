@@ -331,7 +331,10 @@ function AssessmentPanel({ insight, product, onCreateJira }: {
         <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Assessment</p>
         <h3 className="text-heading-sm font-semibold text-foreground mt-1">{insight.summary}</h3>
       </div>
-      <div className="flex gap-2">
+      <div className="flex flex-wrap gap-2">
+        <Button variant="default">
+          <i className="ri-eye-line" style={{ fontSize: "14px" }} /> Watch
+        </Button>
         <Button variant="default" onClick={() => onCreateJira(insight)}>
           <i className="ri-share-line" style={{ fontSize: "14px" }} /> Share
         </Button>
