@@ -6,52 +6,23 @@ import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { PageHeader } from "@/components/custom/PageHeader"
+import { InlineDrawer } from "@/components/custom/InlineDrawer"
 import { buttonVariants } from "@/components/ui/button"
 import { RawDataCard } from "@/components/custom/RawDataCard"
 import {
   products,
   statusToBadgeVariant,
   priorityToBadgeVariant,
+  productDetailMetrics,
   type Insight,
   type Product,
+  type DetailMetric,
 } from "@/data/mock-products"
-
-// --- Health Metric Types ---
-interface MetricCardData {
-  label: string
-  value: string
-  score: number // 0-100, drives progress bar width
-  change: string
-  barColor: "destructive" | "success"
-  target?: number
-  tooltipLine1?: string
-  tooltipLine2?: string
-}
-
-// CUDA product metrics per Figma wireframe
-const cudaOverallHealth = {
-  score: 38,
-  history: [52, 49, 46, 43, 40, 39, 38],
-  change: "↓ 18% from prior period",
-  target: 74,
-  tooltipLine1: "Target: 74.",
-  tooltipLine2: "This benchmark reflects the documentation quality standard set for top-tier NVIDIA products.",
-}
-
-const cudaMetrics: MetricCardData[] = [
-  { label: "Usefulness", value: "34", score: 34, change: "↓ 18% from prior period", barColor: "destructive", target: 80, tooltipLine1: "Target: 80.", tooltipLine2: "The minimum threshold for documentation that supports self-serve developer onboarding." },
-  { label: "Findability", value: "52", score: 52, change: "↓ 6% from prior period", barColor: "destructive", target: 90, tooltipLine1: "Target: 90.", tooltipLine2: "Users should be able to locate CUDA documentation within two search interactions." },
-  { label: "Attractiveness", value: "75", score: 75, change: "Stable", barColor: "success", target: 74, tooltipLine1: "Target: 74.", tooltipLine2: "Reflects visual clarity, formatting consistency, and code block readability across pages." },
-  { label: "Popularity", value: "74", score: 74, change: "↑ 11% from last release", barColor: "success", target: 74, tooltipLine1: "Target: 74.", tooltipLine2: "Indicates healthy traffic distribution across core CUDA documentation pages." },
-  { label: "Errors", value: "9", score: 9, change: "↑ 2 from prior period", barColor: "destructive" },
-  { label: "Traffic", value: "908 visits", score: 30, change: "↑ Up 7% last 6 weeks", barColor: "destructive" },
-]
 
 // --- Inline Line Sparkline (muted) ---
 function LineSparkline({ data }: { data: number[] }) {
@@ -91,7 +62,7 @@ function TargetIndicator({ target, tooltipLine1, tooltipLine2 }: {
         <i className="ri-focus-2-line" style={{ fontSize: "14px" }} />
         <span className="text-xs font-medium">{target}</span>
       </TooltipTrigger>
-      <TooltipContent className="flex flex-col gap-1 max-w-[260px]">
+      <TooltipContent className="flex flex-col gap-1 max-w-[260px] text-left">
         <p className="text-xs">{tooltipLine1}</p>
         <p className="text-xs">{tooltipLine2}</p>
       </TooltipContent>
@@ -144,7 +115,7 @@ function OverallHealthCard({ score, history, change, target, tooltipLine1, toolt
 }
 
 // --- Health Metric Card ---
-function HealthMetricCard({ metric }: { metric: MetricCardData }) {
+function HealthMetricCard({ metric }: { metric: DetailMetric }) {
   return (
     <Card className="flex flex-col">
       <CardContent className="flex flex-col flex-1">
@@ -350,60 +321,55 @@ function JiraModal({ open, onClose, insight }: { open: boolean; onClose: () => v
   )
 }
 
-// --- Assessment Detail Drawer ---
-function AssessmentDrawer({ insight, product, open, onClose, onCreateJira }: {
-  insight: Insight | null; product: Product; open: boolean; onClose: () => void; onCreateJira: (insight: Insight) => void
+// --- Assessment Detail Panel (inline, no overlay) ---
+function AssessmentPanel({ insight, product, onCreateJira }: {
+  insight: Insight; product: Product; onCreateJira: (insight: Insight) => void
 }) {
-  if (!insight) return null
   return (
-    <Sheet open={open} onOpenChange={onClose}>
-      <SheetContent side="right" className="w-full sm:!max-w-lg overflow-y-auto">
-        <SheetHeader>
-          <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Assessment</p>
-          <SheetTitle className="text-heading-sm font-semibold">{insight.summary}</SheetTitle>
-        </SheetHeader>
-        <div className="flex flex-col gap-4 px-4 pb-6">
-          <div className="flex gap-2">
-            <Button variant="critical" onClick={() => onCreateJira(insight)}>
-              <i className="ri-share-line" style={{ fontSize: "14px" }} /> Share
-            </Button>
-            <Button variant="default">
-              <i className="ri-links-line" style={{ fontSize: "14px" }} /> Go to Docs
-            </Button>
-          </div>
-          <Separator />
-          <section>
-            <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-3">Evidence</p>
-            <div className="flex flex-col gap-2">
-              {insight.evidenceItems.map((item, i) => (
-                <Card key={i}><CardContent>
-                  <p className="text-sm text-foreground whitespace-pre-line">{item.description}</p>
-                  <p className="text-xs text-muted-foreground mt-1">Source: {item.source}</p>
-                </CardContent></Card>
-              ))}
-            </div>
-          </section>
-          <Separator />
-          <section>
-            <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-3">This is contributing to</p>
-            <div className="flex flex-wrap gap-2">
-              {insight.contributingTo.map(dim => (
-                <Badge key={dim.key} variant={statusToBadgeVariant(
-                  product.dimensions[dim.key as keyof typeof product.dimensions]?.status ?? "needs-improvement"
-                )}>{dim.name}</Badge>
-              ))}
-            </div>
-          </section>
-          <Separator />
-          <section>
-            <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-3">Affected Documentation</p>
-            {insight.affectedPages.map(page => (
-              <Link key={page.id} to={`/products/${product.id}/pages/${page.id}`} className="text-sm text-primary hover:underline">{page.title}</Link>
-            ))}
-          </section>
+    <div className="flex flex-col gap-4">
+      <div>
+        <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Assessment</p>
+        <h3 className="text-heading-sm font-semibold text-foreground mt-1">{insight.summary}</h3>
+      </div>
+      <div className="flex gap-2">
+        <Button variant="default" onClick={() => onCreateJira(insight)}>
+          <i className="ri-share-line" style={{ fontSize: "14px" }} /> Share
+        </Button>
+        <Button variant="default">
+          <i className="ri-links-line" style={{ fontSize: "14px" }} /> Go to Docs
+        </Button>
+      </div>
+      <Separator />
+      <section>
+        <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-3">Evidence</p>
+        <div className="flex flex-col gap-2">
+          {insight.evidenceItems.map((item, i) => (
+            <Card key={i}><CardContent>
+              <p className="text-sm text-foreground whitespace-pre-line">{item.description}</p>
+              <p className="text-xs text-muted-foreground mt-1">Source: {item.source}</p>
+            </CardContent></Card>
+          ))}
         </div>
-      </SheetContent>
-    </Sheet>
+      </section>
+      <Separator />
+      <section>
+        <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-3">This is contributing to</p>
+        <div className="flex flex-wrap gap-2">
+          {insight.contributingTo.map(dim => (
+            <Badge key={dim.key} variant={statusToBadgeVariant(
+              product.dimensions[dim.key as keyof typeof product.dimensions]?.status ?? "needs-improvement"
+            )}>{dim.name}</Badge>
+          ))}
+        </div>
+      </section>
+      <Separator />
+      <section>
+        <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-3">Affected Documentation</p>
+        {insight.affectedPages.map(page => (
+          <Link key={page.id} to={`/products/${product.id}/pages/${page.id}`} className="text-sm text-primary hover:underline block">{page.title}</Link>
+        ))}
+      </section>
+    </div>
   )
 }
 
@@ -411,7 +377,7 @@ function AssessmentDrawer({ insight, product, open, onClose, onCreateJira }: {
 function IssueRow({ insight, onClick }: {
   insight: Insight; onClick: () => void
 }) {
-  const visitorsAffected = insight.priority === "must-fix" ? "2,053" : insight.priority === "should-improve" ? "566" : "168"
+  const visitorsAffected = insight.visitorsAffected
 
   return (
     <Card className="cursor-pointer transition-colors hover:border-primary/30" onClick={onClick}>
@@ -465,55 +431,64 @@ export function ProductDetail() {
   function openJira(insight: Insight) { setJiraInsight(insight); setJiraOpen(true) }
 
   return (
-    <div className="flex flex-col gap-8">
-      <PageHeader title={product.name} description={product.aiAssessment}>
-        <div className="flex items-center gap-2">
-          <Button variant="secondary"><i className="ri-share-line" style={{ fontSize: "14px" }} /> Share</Button>
-          <Button variant="default"><i className="ri-links-line" style={{ fontSize: "14px" }} /> Go to docs</Button>
-        </div>
-      </PageHeader>
+    <div className="relative">
+      <div className="flex flex-col gap-8">
+        <PageHeader title={product.name} description={product.aiAssessment}>
+          <div className="flex items-center gap-2">
+            <Button variant="secondary"><i className="ri-share-line" style={{ fontSize: "14px" }} /> Share</Button>
+            <Button variant="default"><i className="ri-links-line" style={{ fontSize: "14px" }} /> Go to docs</Button>
+          </div>
+        </PageHeader>
 
-      {/* Health Metrics — Overall Health (wide) + 6 metric cards */}
-      <section>
-        <h2 className="text-heading-sm font-semibold text-foreground mb-4">Health Metrics</h2>
-        <div className="grid grid-cols-7 gap-3">
-          <OverallHealthCard
-            score={cudaOverallHealth.score}
-            history={cudaOverallHealth.history}
-            change={cudaOverallHealth.change}
-            target={cudaOverallHealth.target}
-            tooltipLine1={cudaOverallHealth.tooltipLine1}
-            tooltipLine2={cudaOverallHealth.tooltipLine2}
-          />
-          {cudaMetrics.map((m) => (
-            <HealthMetricCard key={m.label} metric={m} />
-          ))}
-        </div>
-      </section>
+        {/* Health Metrics — Overall Health + metric cards (per-product data) */}
+        {productDetailMetrics[product.id] && (
+          <section>
+            <h2 className="text-heading-sm font-semibold text-foreground mb-4">Health Metrics</h2>
+            <div className="grid grid-cols-7 gap-3">
+              <OverallHealthCard
+                score={productDetailMetrics[product.id].overall.score}
+                history={productDetailMetrics[product.id].overall.history}
+                change={productDetailMetrics[product.id].overall.change}
+                target={productDetailMetrics[product.id].overall.target}
+                tooltipLine1={productDetailMetrics[product.id].overall.tooltipLine1}
+                tooltipLine2={productDetailMetrics[product.id].overall.tooltipLine2}
+              />
+              {productDetailMetrics[product.id].metrics.map((m) => (
+                <HealthMetricCard key={m.label} metric={m} />
+              ))}
+            </div>
+          </section>
+        )}
 
-      {/* Signals — moved above Top Issues */}
-      <RawDataCard />
+        {/* Signals */}
+        <RawDataCard />
 
-      {/* Top 5 Issues — horizontal rows, sorted must-fix → should-improve → watching */}
-      <section>
-        <h2 className="text-heading-sm font-semibold text-foreground mb-4">Top 5 Issues</h2>
-        <div className="flex flex-col gap-2">
-          {[...product.insights]
-            .sort((a, b) => {
-              const order: Record<string, number> = { "must-fix": 0, "should-improve": 1, "watching": 2 }
-              return order[a.priority] - order[b.priority]
-            })
-            .map(insight => (
-              <IssueRow key={insight.id} insight={insight}
-                onClick={() => setSelectedInsight(insight)} />
-            ))}
-        </div>
-        <div className="flex justify-center mt-3">
-          <Button variant="secondary">Show 9 More</Button>
-        </div>
-      </section>
+        {/* Top 5 Issues */}
+        <section>
+          <h2 className="text-heading-sm font-semibold text-foreground mb-4">Top 5 Issues</h2>
+          <div className="flex flex-col gap-2">
+            {[...product.insights]
+              .sort((a, b) => {
+                const order: Record<string, number> = { "must-fix": 0, "should-improve": 1, "watching": 2 }
+                return order[a.priority] - order[b.priority]
+              })
+              .map(insight => (
+                <IssueRow key={insight.id} insight={insight}
+                  onClick={() => setSelectedInsight(insight)} />
+              ))}
+          </div>
+          <div className="flex justify-center mt-3">
+            <Button variant="secondary">Show 9 More</Button>
+          </div>
+        </section>
+      </div>
 
-      <AssessmentDrawer insight={selectedInsight} product={product} open={selectedInsight !== null} onClose={() => setSelectedInsight(null)} onCreateJira={openJira} />
+      <InlineDrawer open={selectedInsight !== null} onClose={() => setSelectedInsight(null)}>
+        {selectedInsight && (
+          <AssessmentPanel insight={selectedInsight} product={product} onCreateJira={openJira} />
+        )}
+      </InlineDrawer>
+
       <JiraModal open={jiraOpen} onClose={() => setJiraOpen(false)} insight={jiraInsight} />
     </div>
   )

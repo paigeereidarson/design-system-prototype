@@ -45,6 +45,7 @@ export interface Insight {
   evidenceItems: EvidenceItem[]
   contributingTo: ContributingDimension[]
   affectedPages: { id: string; title: string }[]
+  visitorsAffected: string
 }
 
 export interface Product {
@@ -224,6 +225,7 @@ const cudaInsights: Insight[] = [
       { name: "Dev Forum", key: "devForum" },
     ],
     affectedPages: [{ id: "cuda-install", title: "CUDA Toolkit Installation Guide" }],
+    visitorsAffected: "12,412",
   },
   {
     id: "cuda-copy-paste",
@@ -240,6 +242,7 @@ const cudaInsights: Insight[] = [
       { name: "Sentiment", key: "sentiment" },
     ],
     affectedPages: [{ id: "cuda-install", title: "CUDA Toolkit Installation Guide" }],
+    visitorsAffected: "4,871",
   },
   {
     id: "cuda-stale-docs",
@@ -256,6 +259,7 @@ const cudaInsights: Insight[] = [
       { name: "Traffic", key: "traffic" },
     ],
     affectedPages: [{ id: "cuda-quick-start", title: "CUDA Quick Start Guide" }],
+    visitorsAffected: "1,340",
   },
   {
     id: "cuda-forum-backlog",
@@ -272,6 +276,7 @@ const cudaInsights: Insight[] = [
       { name: "Dev Forum", key: "devForum" },
     ],
     affectedPages: [{ id: "cuda-install", title: "CUDA Toolkit Installation Guide" }],
+    visitorsAffected: "8,203",
   },
   {
     id: "cuda-search-exits",
@@ -287,6 +292,7 @@ const cudaInsights: Insight[] = [
       { name: "Traffic", key: "traffic" },
     ],
     affectedPages: [{ id: "cuda-install", title: "CUDA Toolkit Installation Guide" }],
+    visitorsAffected: "506",
   },
 ]
 
@@ -304,6 +310,7 @@ const dgxInsights: Insight[] = [
     ],
     contributingTo: [{ name: "Survey Feedback", key: "surveyFeedback" }],
     affectedPages: [{ id: "dgx-setup", title: "DGX Cloud Setup Guide" }],
+    visitorsAffected: "2,318",
   },
 ]
 
@@ -321,6 +328,7 @@ const bionemoInsights: Insight[] = [
     ],
     contributingTo: [{ name: "Traffic", key: "traffic" }],
     affectedPages: [{ id: "bionemo-quickstart", title: "BioNeMo Getting Started" }],
+    visitorsAffected: "724",
   },
   {
     id: "bionemo-hard-to-find",
@@ -334,6 +342,7 @@ const bionemoInsights: Insight[] = [
     ],
     contributingTo: [{ name: "Traffic", key: "traffic" }],
     affectedPages: [{ id: "bionemo-models", title: "BioNeMo Pretrained Models" }],
+    visitorsAffected: "183",
   },
 ]
 
@@ -356,6 +365,7 @@ const nemoInsights: Insight[] = [
       { name: "Dev Forum", key: "devForum" },
     ],
     affectedPages: [{ id: "nemo-install", title: "NeMo Framework Installation" }],
+    visitorsAffected: "7,891",
   },
 ]
 
@@ -640,7 +650,123 @@ export const allProductsCards: AllProductCard[] = [
     improvementsIdentified: 24,
     summary: "Connector and extension docs are fragmented across multiple hubs, making discovery and navigation difficult.",
   },
+  {
+    id: "tensorrt",
+    name: "TensorRT",
+    healthScore: 47,
+    healthHistory: [58, 55, 53, 51, 49, 48, 47],
+    improvementsIdentified: 9,
+    summary: "Python API reference has multiple broken examples. Migration guide from TensorRT 8 to 10 is incomplete and generating repeat support tickets.",
+  },
+  {
+    id: "isaac-sim",
+    name: "Isaac Sim",
+    healthScore: 66,
+    healthHistory: [60, 61, 63, 64, 65, 66, 66],
+    improvementsIdentified: 6,
+    summary: "Improving steadily since last quarter. ROS2 integration guide still references deprecated workflows but traffic is healthy.",
+  },
+  {
+    id: "nemo-framework",
+    name: "NeMo Framework",
+    healthScore: 42,
+    healthHistory: [55, 52, 50, 48, 45, 43, 42],
+    improvementsIdentified: 13,
+    summary: "Fine-tuning and PEFT guides are outdated for the 2.0 release. High search volume with low result click-through.",
+  },
+  {
+    id: "cuquantum",
+    name: "cuQuantum",
+    healthScore: 78,
+    healthHistory: [74, 75, 76, 77, 77, 78, 78],
+    improvementsIdentified: 2,
+    summary: "Well-maintained niche documentation. Small audience but high satisfaction scores and low error count.",
+  },
+  {
+    id: "drive-agx",
+    name: "DRIVE AGX",
+    healthScore: 51,
+    healthHistory: [62, 60, 58, 56, 54, 52, 51],
+    improvementsIdentified: 15,
+    summary: "Safety certification docs are current but developer onboarding guides have significant gaps in sensor calibration workflows.",
+  },
 ]
+
+// --- Subscribed product IDs (shown under "My Products" in sidebar) ---
+export const subscribedProductIds = ["cuda", "dgx-cloud", "bionemo"]
+export const subscribedProducts = products.filter(p => subscribedProductIds.includes(p.id))
+
+// --- Per-product health metrics for Product Detail page ---
+export interface DetailMetric {
+  label: string
+  value: string
+  score: number
+  change: string
+  barColor: "destructive" | "success"
+  target?: number
+  tooltipLine1?: string
+  tooltipLine2?: string
+}
+
+export interface DetailOverallHealth {
+  score: number
+  history: number[]
+  change: string
+  target: number
+  tooltipLine1: string
+  tooltipLine2: string
+}
+
+export const productDetailMetrics: Record<string, { overall: DetailOverallHealth; metrics: DetailMetric[] }> = {
+  cuda: {
+    overall: {
+      score: 38, history: [52, 49, 46, 43, 40, 39, 38],
+      change: "↓ 18% from prior period", target: 74,
+      tooltipLine1: "Target: 74.",
+      tooltipLine2: "This benchmark reflects the documentation quality standard set for top-tier NVIDIA products.",
+    },
+    metrics: [
+      { label: "Usefulness", value: "34", score: 34, change: "↓ 18% from prior period", barColor: "destructive", target: 80, tooltipLine1: "Target: 80.", tooltipLine2: "The minimum threshold for documentation that supports self-serve developer onboarding." },
+      { label: "Findability", value: "52", score: 52, change: "↓ 6% from prior period", barColor: "destructive", target: 90, tooltipLine1: "Target: 90.", tooltipLine2: "Users should be able to locate CUDA documentation within two search interactions." },
+      { label: "Attractiveness", value: "75", score: 75, change: "Stable", barColor: "success", target: 74, tooltipLine1: "Target: 74.", tooltipLine2: "Reflects visual clarity, formatting consistency, and code block readability across pages." },
+      { label: "Popularity", value: "74", score: 74, change: "↑ 11% from last release", barColor: "success", target: 74, tooltipLine1: "Target: 74.", tooltipLine2: "Indicates healthy traffic distribution across core CUDA documentation pages." },
+      { label: "Errors", value: "9", score: 9, change: "↑ 2 from prior period", barColor: "destructive" },
+      { label: "Traffic", value: "908 visits", score: 30, change: "↑ Up 7% last 6 weeks", barColor: "destructive" },
+    ],
+  },
+  "dgx-cloud": {
+    overall: {
+      score: 61, history: [70, 68, 66, 64, 63, 62, 61],
+      change: "↓ 9% from prior period", target: 74,
+      tooltipLine1: "Target: 74.",
+      tooltipLine2: "This benchmark reflects the documentation quality standard set for top-tier NVIDIA products.",
+    },
+    metrics: [
+      { label: "Usefulness", value: "72", score: 72, change: "↑ 4% from prior period", barColor: "success", target: 80, tooltipLine1: "Target: 80.", tooltipLine2: "The minimum threshold for documentation that supports self-serve developer onboarding." },
+      { label: "Findability", value: "58", score: 58, change: "↓ 3% from prior period", barColor: "destructive", target: 85, tooltipLine1: "Target: 85.", tooltipLine2: "Users should be able to locate DGX Cloud documentation within two search interactions." },
+      { label: "Attractiveness", value: "78", score: 78, change: "↑ 2% from prior period", barColor: "success", target: 74, tooltipLine1: "Target: 74.", tooltipLine2: "Reflects visual clarity, formatting consistency, and code block readability across pages." },
+      { label: "Popularity", value: "45", score: 45, change: "↓ 12% from prior period", barColor: "destructive", target: 70, tooltipLine1: "Target: 70.", tooltipLine2: "Indicates healthy traffic distribution across DGX Cloud documentation pages." },
+      { label: "Errors", value: "2", score: 2, change: "no change", barColor: "destructive" },
+      { label: "Traffic", value: "4.2K visits", score: 42, change: "Stable", barColor: "destructive" },
+    ],
+  },
+  bionemo: {
+    overall: {
+      score: 74, history: [72, 73, 71, 74, 73, 75, 74],
+      change: "↑ 2% from prior period", target: 80,
+      tooltipLine1: "Target: 80.",
+      tooltipLine2: "This benchmark reflects the documentation quality standard set for emerging NVIDIA products.",
+    },
+    metrics: [
+      { label: "Usefulness", value: "81", score: 81, change: "↑ 6% from prior period", barColor: "success", target: 80, tooltipLine1: "Target: 80.", tooltipLine2: "The minimum threshold for documentation that supports self-serve developer onboarding." },
+      { label: "Findability", value: "68", score: 68, change: "↓ 2% from prior period", barColor: "destructive", target: 85, tooltipLine1: "Target: 85.", tooltipLine2: "Users should be able to locate BioNeMo documentation within two search interactions." },
+      { label: "Attractiveness", value: "82", score: 82, change: "Stable", barColor: "success", target: 74, tooltipLine1: "Target: 74.", tooltipLine2: "Reflects visual clarity, formatting consistency, and code block readability across pages." },
+      { label: "Popularity", value: "71", score: 71, change: "↑ 8% from prior period", barColor: "success", target: 74, tooltipLine1: "Target: 74.", tooltipLine2: "Indicates healthy traffic distribution across BioNeMo documentation pages." },
+      { label: "Errors", value: "1", score: 1, change: "↓ 2 from prior period", barColor: "destructive" },
+      { label: "Traffic", value: "1.1K visits", score: 11, change: "↓ 15% over 90 days", barColor: "destructive" },
+    ],
+  },
+}
 
 // Color helpers for health score → token
 // <50: red, 50-69: amber, >=70: green

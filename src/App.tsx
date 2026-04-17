@@ -8,12 +8,14 @@ import { MyProducts } from "@/pages/MyProducts"
 import { Playground } from "@/pages/Playground"
 import { ProductDetail } from "@/pages/ProductDetail"
 import { DocPageDetail } from "@/pages/DocPageDetail"
+import { Onboarding } from "@/pages/Onboarding"
 
 function App() {
   return (
     <BrowserRouter>
       <TooltipProvider>
         <Routes>
+          <Route path="/onboarding" element={<Onboarding />} />
           <Route element={<AppLayout />}>
             <Route path="/" element={<Home />} />
             <Route path="/my-products" element={<MyProducts />} />

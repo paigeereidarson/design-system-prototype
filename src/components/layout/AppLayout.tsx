@@ -18,6 +18,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { useTheme } from "@/hooks/use-theme"
 import { products } from "@/data/mock-products"
+import { useSubscribedProductIds } from "@/hooks/use-subscribed-products"
 import logoLight from "@/assets/docs-health-lm.png"
 import logoDark from "@/assets/docs-health-dm.png"
 
@@ -40,6 +41,8 @@ export function AppLayout() {
   const scrollRef = useRef<HTMLDivElement>(null)
   const { theme, toggleTheme } = useTheme()
   const [lastRefreshed, setLastRefreshed] = useState(formatTimestamp)
+  const [subscribedIds] = useSubscribedProductIds()
+  const subscribedProducts = products.filter(p => subscribedIds.includes(p.id))
 
   useEffect(() => {
     requestAnimationFrame(() => {
@@ -55,6 +58,8 @@ export function AppLayout() {
           <img
             src={theme === "nvidia-light" ? logoLight : logoDark}
             alt="NVIDIA"
+            className="cursor-pointer"
+            onClick={() => navigate("/onboarding")}
             style={{ height: "28px", width: "auto" }}
           />
         </SidebarHeader>
@@ -72,7 +77,7 @@ export function AppLayout() {
                 <span>My Products</span>
               </SidebarMenuButton>
               <SidebarMenuSub>
-                {products.map(product => {
+                {subscribedProducts.map(product => {
                   const isActive = location.pathname.startsWith(`/products/${product.id}`)
                   return (
                     <SidebarMenuSubItem key={product.id}>
