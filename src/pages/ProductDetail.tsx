@@ -363,7 +363,10 @@ function AssessmentDrawer({ insight, product, open, onClose, onCreateJira }: {
           <SheetTitle className="text-heading-sm font-semibold">{insight.summary}</SheetTitle>
         </SheetHeader>
         <div className="flex flex-col gap-4 px-4 pb-6">
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
+            <Button variant="default">
+              <i className="ri-eye-line" style={{ fontSize: "14px" }} /> Watch
+            </Button>
             <Button variant="critical" onClick={() => onCreateJira(insight)}>
               <i className="ri-share-line" style={{ fontSize: "14px" }} /> Share
             </Button>
