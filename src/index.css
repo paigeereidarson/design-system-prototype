@@ -342,7 +342,7 @@
 
     /* Core */
     --background:         var(--neutral-dark-50);
-    --foreground:         var(--neutral-dark-950);
+    --foreground:         var(--neutral-dark-900);
 
     /* Card — slightly lighter than background */
     --card:               var(--neutral-dark-100);

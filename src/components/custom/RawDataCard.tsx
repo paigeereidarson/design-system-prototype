@@ -12,47 +12,117 @@ interface KpiTile {
   label: string
   value: string
   change: string
-  trendType: "positive" | "negative" | "neutral" // positive = up is good, negative = up is bad, neutral = muted always
+  trendType: "positive" | "negative" | "neutral"
 }
 
 type DataTab = "usefulness" | "findability" | "attractiveness" | "popularity" | "errors"
 type TimeRange = "all" | "7d" | "30d"
 
-// --- KPI Data — placeholder per new metric tab ---
-const kpiData: Record<DataTab, KpiTile[]> = {
-  usefulness: [
-    { label: "Total Pages", value: "4,832", change: "+203 new (4.2%)", trendType: "neutral" },
-    { label: "Avg Session Duration", value: "2m 14s", change: "−0:18 vs last period", trendType: "neutral" },
-    { label: "Avg Pages Per Session", value: "3.1 pages", change: "+0.4 vs last period", trendType: "positive" },
-    { label: "Survey Engagement Rate", value: "1.8%", change: "−0.3% vs last period", trendType: "neutral" },
-  ],
-  findability: [
-    { label: "Hard to Find Pages", value: "312", change: "+47 vs last period", trendType: "negative" },
-    { label: "Unappealing Pages", value: "189", change: "−22 vs last period", trendType: "negative" },
-    { label: "Popular Pages", value: "634", change: "+81 vs last period", trendType: "positive" },
-    { label: "Unuseful Pages", value: "271", change: "+33 vs last period", trendType: "negative" },
-  ],
-  attractiveness: [
-    { label: "Negative Feedback", value: "2,847", change: "+634 vs last period", trendType: "negative" },
-    { label: "Site Satisfaction", value: "3.2 / 5", change: "−0.4 vs last period", trendType: "neutral" },
-    { label: "Logged Issues", value: "143", change: "+31 vs last period", trendType: "neutral" },
-    { label: "Unuseful Pages", value: "271", change: "+33 vs last period", trendType: "negative" },
-  ],
-  popularity: [
-    { label: "North America", value: "61%", change: "+2% vs last period", trendType: "neutral" },
-    { label: "APAC", value: "22%", change: "−1% vs last period", trendType: "neutral" },
-    { label: "EMEA", value: "14%", change: "flat", trendType: "neutral" },
-    { label: "Other", value: "3%", change: "−1% vs last period", trendType: "neutral" },
-  ],
-  errors: [
-    { label: "Broken Links", value: "3", change: "+3 vs last period", trendType: "negative" },
-    { label: "404 Exits", value: "218", change: "+54 vs last period", trendType: "negative" },
-    { label: "Avg Time to 404", value: "12s", change: "+2s vs last period", trendType: "negative" },
-    { label: "Error-Flagged Pages", value: "9", change: "+2 from prior period", trendType: "negative" },
-  ],
+// --- KPI Data per tab × time range ---
+const kpiData: Record<DataTab, Record<TimeRange, KpiTile[]>> = {
+  usefulness: {
+    all: [
+      { label: "Total Pages", value: "4,832", change: "+203 new (4.2%)", trendType: "neutral" },
+      { label: "Avg Session Duration", value: "2m 14s", change: "−0:18 vs last period", trendType: "neutral" },
+      { label: "Avg Pages Per Session", value: "3.1 pages", change: "+0.4 vs last period", trendType: "positive" },
+      { label: "Survey Engagement Rate", value: "1.8%", change: "−0.3% vs last period", trendType: "neutral" },
+    ],
+    "30d": [
+      { label: "Total Pages", value: "4,832", change: "+41 new this month", trendType: "neutral" },
+      { label: "Avg Session Duration", value: "2m 08s", change: "−0:24 vs prior 30d", trendType: "neutral" },
+      { label: "Avg Pages Per Session", value: "3.3 pages", change: "+0.6 vs prior 30d", trendType: "positive" },
+      { label: "Survey Engagement Rate", value: "2.1%", change: "+0.3% vs prior 30d", trendType: "positive" },
+    ],
+    "7d": [
+      { label: "Total Pages", value: "4,832", change: "+8 new this week", trendType: "neutral" },
+      { label: "Avg Session Duration", value: "1m 52s", change: "−0:36 vs prior 7d", trendType: "neutral" },
+      { label: "Avg Pages Per Session", value: "3.5 pages", change: "+0.8 vs prior 7d", trendType: "positive" },
+      { label: "Survey Engagement Rate", value: "2.4%", change: "+0.6% vs prior 7d", trendType: "positive" },
+    ],
+  },
+  findability: {
+    all: [
+      { label: "Hard to Find Pages", value: "312", change: "+47 vs last period", trendType: "negative" },
+      { label: "Unappealing Pages", value: "189", change: "−22 vs last period", trendType: "negative" },
+      { label: "Popular Pages", value: "634", change: "+81 vs last period", trendType: "positive" },
+      { label: "Unuseful Pages", value: "271", change: "+33 vs last period", trendType: "negative" },
+    ],
+    "30d": [
+      { label: "Hard to Find Pages", value: "87", change: "+12 vs prior 30d", trendType: "negative" },
+      { label: "Unappealing Pages", value: "34", change: "−8 vs prior 30d", trendType: "negative" },
+      { label: "Popular Pages", value: "148", change: "+19 vs prior 30d", trendType: "positive" },
+      { label: "Unuseful Pages", value: "62", change: "+5 vs prior 30d", trendType: "negative" },
+    ],
+    "7d": [
+      { label: "Hard to Find Pages", value: "23", change: "+4 vs prior 7d", trendType: "negative" },
+      { label: "Unappealing Pages", value: "9", change: "−3 vs prior 7d", trendType: "negative" },
+      { label: "Popular Pages", value: "38", change: "+6 vs prior 7d", trendType: "positive" },
+      { label: "Unuseful Pages", value: "14", change: "+1 vs prior 7d", trendType: "negative" },
+    ],
+  },
+  attractiveness: {
+    all: [
+      { label: "Negative Feedback", value: "2,847", change: "+634 vs last period", trendType: "negative" },
+      { label: "Site Satisfaction", value: "3.2 / 5", change: "−0.4 vs last period", trendType: "neutral" },
+      { label: "Logged Issues", value: "143", change: "+31 vs last period", trendType: "neutral" },
+      { label: "Unuseful Pages", value: "271", change: "+33 vs last period", trendType: "negative" },
+    ],
+    "30d": [
+      { label: "Negative Feedback", value: "482", change: "+98 vs prior 30d", trendType: "negative" },
+      { label: "Site Satisfaction", value: "3.0 / 5", change: "−0.2 vs prior 30d", trendType: "neutral" },
+      { label: "Logged Issues", value: "24", change: "+8 vs prior 30d", trendType: "neutral" },
+      { label: "Unuseful Pages", value: "62", change: "+5 vs prior 30d", trendType: "negative" },
+    ],
+    "7d": [
+      { label: "Negative Feedback", value: "127", change: "+34 vs prior 7d", trendType: "negative" },
+      { label: "Site Satisfaction", value: "2.8 / 5", change: "−0.4 vs prior 7d", trendType: "neutral" },
+      { label: "Logged Issues", value: "6", change: "+2 vs prior 7d", trendType: "neutral" },
+      { label: "Unuseful Pages", value: "14", change: "+1 vs prior 7d", trendType: "negative" },
+    ],
+  },
+  popularity: {
+    all: [
+      { label: "North America", value: "61%", change: "+2% vs last period", trendType: "neutral" },
+      { label: "APAC", value: "22%", change: "−1% vs last period", trendType: "neutral" },
+      { label: "EMEA", value: "14%", change: "flat", trendType: "neutral" },
+      { label: "Other", value: "3%", change: "−1% vs last period", trendType: "neutral" },
+    ],
+    "30d": [
+      { label: "North America", value: "63%", change: "+3% vs prior 30d", trendType: "neutral" },
+      { label: "APAC", value: "20%", change: "−2% vs prior 30d", trendType: "neutral" },
+      { label: "EMEA", value: "14%", change: "flat", trendType: "neutral" },
+      { label: "Other", value: "3%", change: "flat", trendType: "neutral" },
+    ],
+    "7d": [
+      { label: "North America", value: "59%", change: "−2% vs prior 7d", trendType: "neutral" },
+      { label: "APAC", value: "24%", change: "+3% vs prior 7d", trendType: "neutral" },
+      { label: "EMEA", value: "14%", change: "+1% vs prior 7d", trendType: "neutral" },
+      { label: "Other", value: "3%", change: "flat", trendType: "neutral" },
+    ],
+  },
+  errors: {
+    all: [
+      { label: "Broken Links", value: "3", change: "+3 vs last period", trendType: "negative" },
+      { label: "404 Exits", value: "218", change: "+54 vs last period", trendType: "negative" },
+      { label: "Avg Time to 404", value: "12s", change: "+2s vs last period", trendType: "negative" },
+      { label: "Error-Flagged Pages", value: "9", change: "+2 from prior period", trendType: "negative" },
+    ],
+    "30d": [
+      { label: "Broken Links", value: "3", change: "+3 this month", trendType: "negative" },
+      { label: "404 Exits", value: "72", change: "+18 vs prior 30d", trendType: "negative" },
+      { label: "Avg Time to 404", value: "14s", change: "+4s vs prior 30d", trendType: "negative" },
+      { label: "Error-Flagged Pages", value: "4", change: "+1 from prior 30d", trendType: "negative" },
+    ],
+    "7d": [
+      { label: "Broken Links", value: "3", change: "no change this week", trendType: "neutral" },
+      { label: "404 Exits", value: "24", change: "+6 vs prior 7d", trendType: "negative" },
+      { label: "Avg Time to 404", value: "11s", change: "−1s vs prior 7d", trendType: "neutral" },
+      { label: "Error-Flagged Pages", value: "2", change: "flat", trendType: "neutral" },
+    ],
+  },
 }
 
-// --- Trend Arrow (revision #5 + #6 — correct colors + larger size) ---
+// --- Trend Arrow ---
 function TrendArrow({ change, trendType }: { change: string; trendType: string }) {
   const isUp = change.startsWith("+")
   const isDown = change.startsWith("−") || change.startsWith("-")
@@ -85,7 +155,7 @@ function KpiTileCard({ tile }: { tile: KpiTile }) {
   )
 }
 
-// --- Traffic Chart (revision #1 grid, #2 tooltip, #4 NVIDIA green) ---
+// --- Usefulness Chart (Line) ---
 const trafficData = [
   { month: "Jan", visits: 380000, newPages: 42 },
   { month: "Feb", visits: 290000, newPages: 38 },
@@ -105,7 +175,6 @@ function TrafficChart() {
     <div className="flex flex-col gap-3">
       <ChartContainer config={trafficConfig} className="h-[240px] w-full">
         <LineChart data={trafficData} margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
-
           <CartesianGrid strokeDasharray="3 3" vertical={false} style={{ stroke: "hsl(var(--border))", strokeOpacity: 0.8 }} />
           <XAxis dataKey="month" className="text-xs" />
           <YAxis yAxisId="left" className="text-xs" tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}K`} />
@@ -121,7 +190,7 @@ function TrafficChart() {
   )
 }
 
-// --- Findability Chart ---
+// --- Findability Chart (left-aligned horizontal bars) ---
 const findabilityData = [
   { category: "Healthy", count: 3426, pct: 70.9, fill: "#76B900" },
   { category: "Popular", count: 634, pct: 13.1, fill: "#76B900" },
@@ -137,7 +206,7 @@ const findabilityConfig = {
 function FindabilityChart() {
   return (
     <ChartContainer config={findabilityConfig} className="h-[240px] w-full">
-      <BarChart data={findabilityData} layout="vertical" margin={{ top: 5, right: 30, left: 100, bottom: 5 }}>
+      <BarChart data={findabilityData} layout="vertical" margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
         <CartesianGrid strokeDasharray="3 3" horizontal={false} style={{ stroke: "hsl(var(--border))", strokeOpacity: 0.8 }} />
         <XAxis type="number" className="text-xs" />
         <YAxis type="category" dataKey="category" className="text-xs" width={90} />
@@ -152,7 +221,7 @@ function FindabilityChart() {
   )
 }
 
-// --- Feedback Funnel ---
+// --- Attractiveness Funnel ---
 const funnelData = [
   { step: "Negative Feedback", value: 2847, pct: "100%", fill: "#76B900" },
   { step: "Logged in JIRA", value: 143, pct: "5.0%", fill: "#76B900" },
@@ -188,7 +257,7 @@ function FeedbackFunnel() {
   )
 }
 
-// --- Discovery Panel ---
+// --- Popularity Panel ---
 const searchData = [
   { query: "cuda install windows", url: "/cuda/install/windows", volume: 8421 },
   { query: "tensorrt getting started", url: "/tensorrt/quickstart", volume: 6103 },
@@ -209,7 +278,6 @@ const regionData = [
 
 const regionConfig = {
   pct: { label: "% of visitors", color: "#76B900" },
-  // All charts use single NVIDIA green: #76B900
 }
 
 function DiscoveryPanel() {
@@ -246,9 +314,9 @@ function DiscoveryPanel() {
       <div>
         <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-2">Visitors by Region</p>
         <ChartContainer config={regionConfig} className="h-[240px] w-full">
-          <BarChart data={regionData} layout="vertical" margin={{ top: 5, right: 40, left: 80, bottom: 5 }}>
+          <BarChart data={regionData} layout="vertical" margin={{ top: 5, right: 40, left: 0, bottom: 5 }}>
             <XAxis type="number" className="text-xs" domain={[0, 100]} tickFormatter={(v) => `${v}%`} />
-            <YAxis type="category" dataKey="region" className="text-xs" width={70} />
+            <YAxis type="category" dataKey="region" className="text-xs" width={90} />
             <ChartTooltip content={<ChartTooltipContent formatter={(value) => `${value}%`} />} />
             <Bar dataKey="pct" fill="var(--color-pct)" radius={[0, 4, 4, 0]}>
               <LabelList dataKey="pct" position="right" className="text-xs fill-foreground" formatter={(v) => `${v}%`} />
@@ -260,60 +328,84 @@ function DiscoveryPanel() {
   )
 }
 
-// --- Main Component (revision #10 — tighter title/desc gap) ---
+// --- Errors Chart (bar) ---
+const errorsData = [
+  { category: "Broken Links", count: 3, fill: "#76B900" },
+  { category: "404 Exits", count: 218, fill: "#76B900" },
+  { category: "Stale Pages", count: 9, fill: "#76B900" },
+  { category: "Missing Metadata", count: 14, fill: "#76B900" },
+]
+
+const errorsConfig = {
+  count: { label: "Count" },
+}
+
+function ErrorsChart() {
+  return (
+    <ChartContainer config={errorsConfig} className="h-[240px] w-full">
+      <BarChart data={errorsData} layout="vertical" margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
+        <CartesianGrid strokeDasharray="3 3" horizontal={false} style={{ stroke: "hsl(var(--border))", strokeOpacity: 0.8 }} />
+        <XAxis type="number" className="text-xs" />
+        <YAxis type="category" dataKey="category" className="text-xs" width={110} />
+        <ChartTooltip content={<ChartTooltipContent />} />
+        <Bar dataKey="count" radius={[0, 4, 4, 0]}>
+          {errorsData.map((entry, i) => (
+            <Cell key={i} fill={entry.fill} />
+          ))}
+        </Bar>
+      </BarChart>
+    </ChartContainer>
+  )
+}
+
+// --- Main Component ---
 export function RawDataCard() {
   const [dataTab, setDataTab] = useState<DataTab>("usefulness")
   const [timeRange, setTimeRange] = useState<TimeRange>("all")
 
-  const tiles = kpiData[dataTab]
+  const tiles = kpiData[dataTab][timeRange]
 
   return (
-    <section className="flex flex-col gap-1">
+    <section className="flex flex-col gap-3">
       <h2 className="text-heading-sm font-semibold text-foreground">Signals</h2>
-      <p className="text-xs text-muted-foreground mb-2">Data points feeding this product's health assessment.</p>
+      <p className="text-xs text-muted-foreground">Data points feeding this product's health assessment.</p>
 
+      {/* Tab Control Row */}
+      <div className="flex items-center justify-between">
+        <Tabs value={dataTab} onValueChange={(v) => setDataTab(v as DataTab)}>
+          <TabsList variant="pill">
+            <TabsTrigger value="usefulness">Usefulness</TabsTrigger>
+            <TabsTrigger value="findability">Findability</TabsTrigger>
+            <TabsTrigger value="attractiveness">Attractiveness</TabsTrigger>
+            <TabsTrigger value="popularity">Popularity</TabsTrigger>
+            <TabsTrigger value="errors">Errors</TabsTrigger>
+          </TabsList>
+        </Tabs>
+
+        <Tabs value={timeRange} onValueChange={(v) => setTimeRange(v as TimeRange)}>
+          <TabsList variant="pill">
+            <TabsTrigger value="all">All</TabsTrigger>
+            <TabsTrigger value="7d">7 D</TabsTrigger>
+            <TabsTrigger value="30d">30 D</TabsTrigger>
+          </TabsList>
+        </Tabs>
+      </div>
+
+      {/* KPI Tile Row */}
+      <div className="grid grid-cols-4 gap-3">
+        {tiles.map((tile, i) => (
+          <KpiTileCard key={`${dataTab}-${timeRange}-${i}`} tile={tile} />
+        ))}
+      </div>
+
+      {/* Visualization */}
       <Card>
         <CardContent>
-          <div className="flex flex-col gap-3">
-            {/* Zone 1 — Tab Control Row (revision #3 — bg-secondary for pill tabs) */}
-            <div className="flex items-center justify-between">
-              <Tabs value={dataTab} onValueChange={(v) => setDataTab(v as DataTab)}>
-                <TabsList variant="pill" className="bg-secondary">
-                  <TabsTrigger value="usefulness">Usefulness</TabsTrigger>
-                  <TabsTrigger value="findability">Findability</TabsTrigger>
-                  <TabsTrigger value="attractiveness">Attractiveness</TabsTrigger>
-                  <TabsTrigger value="popularity">Popularity</TabsTrigger>
-                  <TabsTrigger value="errors">Errors</TabsTrigger>
-                </TabsList>
-              </Tabs>
-
-              <Tabs value={timeRange} onValueChange={(v) => setTimeRange(v as TimeRange)}>
-                <TabsList variant="pill" className="bg-secondary">
-                  <TabsTrigger value="all">All</TabsTrigger>
-                  <TabsTrigger value="7d">7 D</TabsTrigger>
-                  <TabsTrigger value="30d">30 D</TabsTrigger>
-                </TabsList>
-              </Tabs>
-            </div>
-
-            {/* Zone 2 — KPI Tile Row */}
-            <div className="grid grid-cols-4 gap-3">
-              {tiles.map((tile, i) => (
-                <KpiTileCard key={`${dataTab}-${i}`} tile={tile} />
-              ))}
-            </div>
-
-            {/* Zone 3 — Visualization */}
-            <Card>
-              <CardContent>
-                {dataTab === "usefulness" && <TrafficChart />}
-                {dataTab === "findability" && <FindabilityChart />}
-                {dataTab === "attractiveness" && <FeedbackFunnel />}
-                {dataTab === "popularity" && <DiscoveryPanel />}
-                {dataTab === "errors" && <FindabilityChart />}
-              </CardContent>
-            </Card>
-          </div>
+          {dataTab === "usefulness" && <TrafficChart />}
+          {dataTab === "findability" && <FindabilityChart />}
+          {dataTab === "attractiveness" && <FeedbackFunnel />}
+          {dataTab === "popularity" && <DiscoveryPanel />}
+          {dataTab === "errors" && <ErrorsChart />}
         </CardContent>
       </Card>
     </section>

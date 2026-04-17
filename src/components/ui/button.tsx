@@ -11,7 +11,7 @@ const buttonVariants = cva(
         default:
           "bg-secondary text-foreground hover:bg-secondary-hover [&_i]:text-foreground aria-expanded:bg-secondary",
         secondary:
-          "text-foreground [&_i]:text-foreground hover:bg-secondary hover:text-foreground hover:[&_i]:text-foreground aria-expanded:bg-secondary aria-expanded:text-foreground",
+          "border-secondary text-foreground [&_i]:text-foreground hover:bg-secondary hover:text-foreground hover:[&_i]:text-foreground aria-expanded:bg-secondary aria-expanded:text-foreground",
         /**
          * Critical — use for the primary action on a screen.
          * There should only be one critical button per view.

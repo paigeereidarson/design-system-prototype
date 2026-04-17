@@ -29,7 +29,7 @@ const tabsListVariants = cva(
     variants: {
       variant: {
         line: "gap-1 bg-transparent",
-        pill: "gap-1 rounded-lg bg-muted p-1",
+        pill: "gap-1 rounded-lg bg-secondary p-1",
       },
     },
     defaultVariants: {

@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { Card, CardContent } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
 import { PageHeader } from "@/components/custom/PageHeader"
@@ -45,26 +46,26 @@ function ProductCard({ product }: { product: AllProductCard }) {
 
   return (
     <Card
+      size="sm"
       className="cursor-pointer transition-colors hover:border-primary/30"
       onClick={() => navigate(`/products/${product.id}`)}
     >
       <CardContent>
-        {/* Title row — no badge */}
-        <h3 className="text-heading-sm font-semibold text-foreground mb-4">{product.name}</h3>
+        <h3 className="text-sm font-semibold text-foreground mb-2">{product.name}</h3>
 
-        <div className="grid grid-cols-[1fr_1fr_2fr] gap-4">
+        <div className="grid grid-cols-[1fr_1fr_2fr_auto] gap-4 items-start">
           {/* Zone 1: Overall Health */}
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-1">
             <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
               Overall Health
             </p>
             <div className="flex items-center gap-2">
-              <p className={`text-decorative font-bold leading-none ${healthScoreTextClass(product.healthScore)}`}>
+              <p className={`text-heading font-bold leading-none ${healthScoreTextClass(product.healthScore)}`}>
                 {product.healthScore}
               </p>
               <Sparkline data={product.healthHistory} />
             </div>
-            <div className="h-1 w-full rounded-full bg-muted overflow-hidden mt-1">
+            <div className="h-1.5 w-full rounded-full overflow-hidden bg-secondary mt-1">
               <div
                 className={`h-full rounded-full ${healthScoreBgClass(product.healthScore)}`}
                 style={{ width: `${product.healthScore}%` }}
@@ -73,32 +74,42 @@ function ProductCard({ product }: { product: AllProductCard }) {
           </div>
 
           {/* Zone 2: Improvements identified */}
-          <div className="flex flex-col gap-2 border-l border-border pl-4">
+          <div className="flex flex-col gap-1 border-l border-border pl-4">
             <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
               Improvements identified
             </p>
-            <p className="text-decorative font-bold text-foreground leading-none">
+            <p className="text-heading font-bold text-foreground leading-none">
               {product.improvementsIdentified}
             </p>
           </div>
 
           {/* Zone 3: Summary with left border accent */}
           <div className="border-l border-muted-foreground pl-3">
-            <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-1">
+            <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-0.5">
               Summary
             </p>
-            <p className="text-sm font-medium text-muted-foreground">{product.summary}</p>
+            <p className="text-xs text-muted-foreground">{product.summary}</p>
           </div>
+
+          {/* Zone 4: Details button */}
+          <Button
+            variant="secondary"
+            size="default"
+            className="shrink-0 self-center"
+            onClick={(e) => { e.stopPropagation(); navigate(`/products/${product.id}`) }}
+          >
+            Details
+          </Button>
         </div>
       </CardContent>
     </Card>
   )
 }
 
-type SortOption = "actionable" | "improvements" | "alphabetical"
+type SortOption = "Most Actionable" | "Most Improvements" | "Alphabetical"
 
 export function Home() {
-  const [sort, setSort] = useState<SortOption>("actionable")
+  const [sort, setSort] = useState<SortOption>("Most Actionable")
   const [search, setSearch] = useState("")
 
   const filtered = allProductsCards.filter((p) =>
@@ -106,8 +117,8 @@ export function Home() {
   )
 
   const sorted = [...filtered].sort((a, b) => {
-    if (sort === "actionable") return a.healthScore - b.healthScore
-    if (sort === "improvements") return b.improvementsIdentified - a.improvementsIdentified
+    if (sort === "Most Actionable") return a.healthScore - b.healthScore
+    if (sort === "Most Improvements") return b.improvementsIdentified - a.improvementsIdentified
     return a.name.localeCompare(b.name)
   })
 
@@ -120,16 +131,16 @@ export function Home() {
 
       <section className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-2">
             <span className="text-sm text-muted-foreground">Sort:</span>
             <Select value={sort} onValueChange={(v) => setSort(v as SortOption)}>
-              <SelectTrigger className="h-8 w-auto gap-1 border-0 bg-transparent px-2 text-sm font-medium text-foreground shadow-none hover:bg-secondary focus-visible:ring-0">
+              <SelectTrigger className="w-[180px]">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="actionable">Most actionable</SelectItem>
-                <SelectItem value="improvements">Most improvements</SelectItem>
-                <SelectItem value="alphabetical">Alphabetical</SelectItem>
+                <SelectItem value="Most Actionable">Most Actionable</SelectItem>
+                <SelectItem value="Most Improvements">Most Improvements</SelectItem>
+                <SelectItem value="Alphabetical">Alphabetical</SelectItem>
               </SelectContent>
             </Select>
           </div>

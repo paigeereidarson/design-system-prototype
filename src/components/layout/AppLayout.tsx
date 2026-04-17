@@ -149,7 +149,7 @@ export function AppLayout() {
 
         <div className="flex-1 flex flex-col bg-muted pr-2 pb-2 pl-3 overflow-hidden">
           <div className="flex-1 flex flex-col bg-background border border-border rounded-xl overflow-hidden">
-            <div ref={scrollRef} className="flex-1 overflow-y-auto p-4">
+            <div ref={scrollRef} className="flex-1 overflow-y-auto p-6">
               <Outlet />
             </div>
           </div>

@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label"
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { PageHeader } from "@/components/custom/PageHeader"
 import { buttonVariants } from "@/components/ui/button"
@@ -16,51 +17,41 @@ import { RawDataCard } from "@/components/custom/RawDataCard"
 import {
   products,
   statusToBadgeVariant,
-  statusToDotVariant,
   priorityToBadgeVariant,
-  healthScoreTextClass,
-  healthScoreBgClass,
   type Insight,
   type Product,
-  type DimensionScore,
 } from "@/data/mock-products"
 
 // --- Health Metric Types ---
-interface HealthMetric {
+interface MetricCardData {
   label: string
   value: string
+  score: number // 0-100, drives progress bar width
   change: string
-  tone: "positive" | "negative" | "neutral"
-  trend: "up" | "down" | "flat"
+  barColor: "destructive" | "success"
+  target?: number
+  tooltipLine1?: string
+  tooltipLine2?: string
 }
 
-// Hardcoded CUDA metrics per wireframe; other products fall back to a sensible default pattern
-const cudaHealthMetrics: HealthMetric[] = [
-  { label: "Usefulness", value: "34", change: "18% from prior period", tone: "negative", trend: "down" },
-  { label: "Findability", value: "52", change: "6% from prior period", tone: "negative", trend: "down" },
-  { label: "Attractiveness", value: "67", change: "Stable", tone: "neutral", trend: "flat" },
-  { label: "Popularity", value: "74", change: "11% (driver release)", tone: "positive", trend: "up" },
-  { label: "Errors", value: "9", change: "2 from prior period", tone: "negative", trend: "up" },
+// CUDA product metrics per Figma wireframe
+const cudaOverallHealth = {
+  score: 38,
+  history: [52, 49, 46, 43, 40, 39, 38],
+  change: "↓ 18% from prior period",
+  target: 74,
+  tooltipLine1: "Target: 74.",
+  tooltipLine2: "This benchmark reflects the documentation quality standard set for top-tier NVIDIA products.",
+}
+
+const cudaMetrics: MetricCardData[] = [
+  { label: "Usefulness", value: "34", score: 34, change: "↓ 18% from prior period", barColor: "destructive", target: 80, tooltipLine1: "Target: 80.", tooltipLine2: "The minimum threshold for documentation that supports self-serve developer onboarding." },
+  { label: "Findability", value: "52", score: 52, change: "↓ 6% from prior period", barColor: "destructive", target: 90, tooltipLine1: "Target: 90.", tooltipLine2: "Users should be able to locate CUDA documentation within two search interactions." },
+  { label: "Attractiveness", value: "75", score: 75, change: "Stable", barColor: "success", target: 74, tooltipLine1: "Target: 74.", tooltipLine2: "Reflects visual clarity, formatting consistency, and code block readability across pages." },
+  { label: "Popularity", value: "74", score: 74, change: "↑ 11% from last release", barColor: "success", target: 74, tooltipLine1: "Target: 74.", tooltipLine2: "Indicates healthy traffic distribution across core CUDA documentation pages." },
+  { label: "Errors", value: "9", score: 9, change: "↑ 2 from prior period", barColor: "destructive" },
+  { label: "Traffic", value: "908 visits", score: 30, change: "↑ Up 7% last 6 weeks", barColor: "destructive" },
 ]
-
-// Overall Health score per product (matches wireframe for CUDA = 38)
-const productHealthScore: Record<string, { score: number; history: number[] }> = {
-  cuda: { score: 38, history: [52, 49, 46, 43, 40, 39, 38] },
-  "nemo-llm": { score: 41, history: [58, 55, 52, 49, 46, 43, 41] },
-  "dgx-cloud": { score: 61, history: [70, 68, 66, 64, 63, 62, 61] },
-  bionemo: { score: 74, history: [72, 73, 71, 74, 73, 75, 74] },
-}
-
-function getHealthScoreFor(productId: string) {
-  return productHealthScore[productId] ?? { score: 50, history: [55, 54, 52, 51, 50, 50, 50] }
-}
-
-// --- Trend Icon ---
-function TrendIcon({ trend }: { trend: string }) {
-  if (trend === "declining") return <i className="ri-arrow-down-line text-destructive-foreground" style={{ fontSize: "14px" }} />
-  if (trend === "improving") return <i className="ri-arrow-up-line text-success-foreground" style={{ fontSize: "14px" }} />
-  return <i className="ri-subtract-line text-muted-foreground" style={{ fontSize: "14px" }} />
-}
 
 // --- Inline Line Sparkline (muted) ---
 function LineSparkline({ data }: { data: number[] }) {
@@ -90,53 +81,85 @@ function LineSparkline({ data }: { data: number[] }) {
   )
 }
 
-// --- Overall Health Card (mirrors the All Products treatment) ---
-function OverallHealthCard({ score, history }: { score: number; history: number[] }) {
+// --- Target icon + tooltip ---
+function TargetIndicator({ target, tooltipLine1, tooltipLine2 }: {
+  target: number; tooltipLine1: string; tooltipLine2: string
+}) {
   return (
-    <Card className="col-span-2">
-      <CardContent>
-        <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-2">
-          Overall Health
-        </p>
-        <div className="flex items-center gap-2 mb-2">
-          <p className={`text-decorative font-bold leading-none ${healthScoreTextClass(score)}`}>{score}</p>
+    <Tooltip>
+      <TooltipTrigger className="flex items-center gap-0.5 text-foreground">
+        <i className="ri-focus-2-line" style={{ fontSize: "14px" }} />
+        <span className="text-xs font-medium">{target}</span>
+      </TooltipTrigger>
+      <TooltipContent className="flex flex-col gap-1 max-w-[260px]">
+        <p className="text-xs">{tooltipLine1}</p>
+        <p className="text-xs">{tooltipLine2}</p>
+      </TooltipContent>
+    </Tooltip>
+  )
+}
+
+// --- Progress bar (bullet chart) ---
+function BulletBar({ score, barColor }: { score: number; barColor: "destructive" | "success" }) {
+  const fillClass = barColor === "destructive"
+    ? "bg-destructive-foreground"
+    : "bg-primary"
+  return (
+    <div className="h-2 w-full rounded-full overflow-hidden bg-secondary">
+      <div
+        className={`h-full rounded-full ${fillClass}`}
+        style={{ width: `${Math.max(score, 2)}%` }}
+      />
+    </div>
+  )
+}
+
+// --- Overall Health Card (wider, decorative font, sparkline) ---
+function OverallHealthCard({ score, history, change, target, tooltipLine1, tooltipLine2 }: {
+  score: number; history: number[]; change: string; target: number; tooltipLine1: string; tooltipLine2: string
+}) {
+  const scoreColor = score < 70 ? "text-destructive-foreground" : "text-success-foreground"
+  const barColor: "destructive" | "success" = score < 70 ? "destructive" : "success"
+
+  return (
+    <Card className="flex flex-col">
+      <CardContent className="flex flex-col flex-1">
+        <div className="flex items-center justify-between mb-2">
+          <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+            Overall Health
+          </p>
+          <TargetIndicator target={target} tooltipLine1={tooltipLine1} tooltipLine2={tooltipLine2} />
+        </div>
+        <div className="flex items-center gap-2">
+          <p className={`text-decorative font-bold leading-none ${scoreColor}`}>{score}</p>
           <LineSparkline data={history} />
         </div>
-        <div className="h-1 w-full rounded-full bg-muted overflow-hidden">
-          <div
-            className={`h-full rounded-full ${healthScoreBgClass(score)}`}
-            style={{ width: `${score}%` }}
-          />
+        <p className="text-sm text-muted-foreground mt-1">{change}</p>
+        <div className="mt-auto pt-3">
+          <BulletBar score={score} barColor={barColor} />
         </div>
       </CardContent>
     </Card>
   )
 }
 
-// --- Health Metric Card (Usefulness / Findability / etc.) ---
-function HealthMetricCard({ metric }: { metric: HealthMetric }) {
-  const toneClass =
-    metric.tone === "positive" ? "text-success-foreground" :
-    metric.tone === "negative" ? "text-destructive-foreground" :
-    "text-muted-foreground"
-
-  const arrowIcon =
-    metric.trend === "up" ? "ri-arrow-up-line" :
-    metric.trend === "down" ? "ri-arrow-down-line" :
-    null
-
+// --- Health Metric Card ---
+function HealthMetricCard({ metric }: { metric: MetricCardData }) {
   return (
-    <Card>
-      <CardContent>
-        <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-2">
-          {metric.label}
-        </p>
-        <p className="text-heading font-bold text-foreground leading-tight">{metric.value}</p>
-        <div className={`flex items-start gap-1 mt-1 ${toneClass}`}>
-          {arrowIcon && (
-            <i className={arrowIcon} style={{ fontSize: "14px", lineHeight: "16px" }} />
+    <Card className="flex flex-col">
+      <CardContent className="flex flex-col flex-1">
+        <div className="flex items-center justify-between mb-2">
+          <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+            {metric.label}
+          </p>
+          {metric.target !== undefined && metric.tooltipLine1 && metric.tooltipLine2 && (
+            <TargetIndicator target={metric.target} tooltipLine1={metric.tooltipLine1} tooltipLine2={metric.tooltipLine2} />
           )}
-          <p className="text-xs leading-tight">{metric.change}</p>
+        </div>
+        <p className="text-heading font-bold text-foreground leading-tight">{metric.value}</p>
+        <p className="text-sm text-muted-foreground mt-1">{metric.change}</p>
+        <div className="mt-auto pt-3">
+          <BulletBar score={metric.score} barColor={metric.barColor} />
         </div>
       </CardContent>
     </Card>
@@ -384,29 +407,6 @@ function AssessmentDrawer({ insight, product, open, onClose, onCreateJira }: {
   )
 }
 
-// --- Health Dimension Card (redesigned) ---
-function DimensionCard({ label, dimension, onClick }: { label: string; dimension: DimensionScore; onClick?: () => void }) {
-  return (
-    <Card className={onClick ? "cursor-pointer transition-colors hover:border-primary/30" : ""} onClick={onClick}>
-      <CardContent>
-        <div className="flex items-center justify-between mb-1">
-          <div className="flex items-center gap-1.5">
-            <Badge variant={statusToDotVariant(dimension.status)} />
-            <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">{label}</p>
-          </div>
-          <TrendIcon trend={dimension.trend} />
-        </div>
-        <p className="text-heading font-bold text-foreground leading-tight mt-1">
-          {dimension.dataPoint.split("\n")[0]}
-        </p>
-        {dimension.dataPoint.split("\n")[1] && (
-          <p className="text-xs text-muted-foreground mt-1">{dimension.dataPoint.split("\n")[1]}</p>
-        )}
-      </CardContent>
-    </Card>
-  )
-}
-
 // --- Issue Card (redesigned - horizontal row) ---
 function IssueRow({ insight, onClick }: {
   insight: Insight; onClick: () => void
@@ -464,44 +464,30 @@ export function ProductDetail() {
 
   function openJira(insight: Insight) { setJiraInsight(insight); setJiraOpen(true) }
 
-  const dimensionLabels: Record<string, string> = {
-    sentiment: "Sentiment", repoHealth: "Repo Health", devForum: "Dev Forum",
-    surveyFeedback: "Survey Feedback", traffic: "Traffic",
-  }
-
   return (
     <div className="flex flex-col gap-8">
-      <PageHeader eyebrow="Version 0.1.5 / Product details" title={product.name} description={product.aiAssessment}>
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
-            <Button variant="default"><i className="ri-share-line" style={{ fontSize: "14px" }} /> Share</Button>
-            <Button variant="default"><i className="ri-links-line" style={{ fontSize: "14px" }} /> Go to Docs</Button>
-          </div>
-          <div className="flex items-center gap-1.5 pl-4 border-l border-border">
-            <i className="ri-eye-line text-foreground" style={{ fontSize: "16px" }} />
-            <div className="flex flex-col">
-              <p className="text-heading-sm font-bold text-foreground leading-tight">{product.weeklyVisitorsDisplay}</p>
-              <p className="text-xs text-muted-foreground">{product.visitorsPast}</p>
-            </div>
-          </div>
+      <PageHeader title={product.name} description={product.aiAssessment}>
+        <div className="flex items-center gap-2">
+          <Button variant="secondary"><i className="ri-share-line" style={{ fontSize: "14px" }} /> Share</Button>
+          <Button variant="default"><i className="ri-links-line" style={{ fontSize: "14px" }} /> Go to docs</Button>
         </div>
       </PageHeader>
 
-      {/* Health Metrics — Overall Health + 5 metrics + existing Traffic card */}
+      {/* Health Metrics — Overall Health (wide) + 6 metric cards */}
       <section>
         <h2 className="text-heading-sm font-semibold text-foreground mb-4">Health Metrics</h2>
-        <div className="grid grid-cols-8 gap-3">
+        <div className="grid grid-cols-7 gap-3">
           <OverallHealthCard
-            score={getHealthScoreFor(product.id).score}
-            history={getHealthScoreFor(product.id).history}
+            score={cudaOverallHealth.score}
+            history={cudaOverallHealth.history}
+            change={cudaOverallHealth.change}
+            target={cudaOverallHealth.target}
+            tooltipLine1={cudaOverallHealth.tooltipLine1}
+            tooltipLine2={cudaOverallHealth.tooltipLine2}
           />
-          {cudaHealthMetrics.map((m) => (
+          {cudaMetrics.map((m) => (
             <HealthMetricCard key={m.label} metric={m} />
           ))}
-          <DimensionCard
-            label={dimensionLabels.traffic}
-            dimension={product.dimensions.traffic}
-          />
         </div>
       </section>
 

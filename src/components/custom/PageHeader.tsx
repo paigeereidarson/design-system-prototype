@@ -25,7 +25,7 @@ export function PageHeader({ eyebrow, title, description, children }: PageHeader
           )}
         </div>
         {description && (
-          <p className="text-heading-sm text-muted-foreground">{description}</p>
+          <p className="text-sm text-muted-foreground">{description}</p>
         )}
       </div>
       <Separator />
